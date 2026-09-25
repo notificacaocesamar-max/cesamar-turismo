@@ -1,0 +1,13 @@
+{
+  "name": "cesamar-ofertas",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Site de ofertas de passagens da Cesamar Turismo — frontend estático + robô diário (Node).",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "fotos": "node tools/baixar-biblioteca-fotos.js",
+    "test": "node --test",
+    "robo": "node robo/index.js",
+    "seed": "node tools/gerar-seed.js && node tools/gerar-seed-supabase.js"
+  }
+}

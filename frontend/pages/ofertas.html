@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ofertas de passagens · Cesamar Turismo</title>
+<meta name="description" content="Ofertas de passagens aéreas internacionais de ida e volta saindo de São Paulo e do Rio de Janeiro, selecionadas por consultores da Cesamar.">
+<meta name="theme-color" content="#111436">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body class="has-hero" data-page="ofertas" data-root="../">
+<div id="site-header"></div>
+<main id="conteudo">
+<section class="page-hero on-dark">
+  <img class="bg" src="../assets/img/destinos/italia.svg" alt="">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Você está em"><a href="../index.html">Início</a><span aria-hidden="true">/</span><span>Ofertas</span></nav>
+    <span class="eyebrow">Ofertas de passagem aérea</span>
+    <h1 id="titulo-ofertas">Oportunidades de ida e volta <em class="a">selecionadas</em></h1>
+    <p class="lead">Pesquisamos todos os dias saindo de São Paulo (GRU, CGH, VCP) e do Rio de Janeiro (GIG, SDU). Um consultor revisa cada oferta antes de ela aparecer aqui.</p>
+  </div>
+</section>
+<section class="section" style="padding-top:48px">
+  <div class="wrap">
+    <form class="of-filters" id="filtros-ofertas" aria-label="Filtrar ofertas" onsubmit="return false">
+      <select name="categoria" aria-label="Categoria"></select>
+      <select name="destino" aria-label="Destino"></select>
+      <select name="origem" aria-label="Saindo de"><option value="">São Paulo ou Rio</option><option value="SAO">São Paulo</option><option value="RIO">Rio de Janeiro</option></select>
+      <select name="regiao" aria-label="Região"></select>
+      <select name="mes" aria-label="Mês da ida"></select>
+      <select name="ordem" aria-label="Ordenar"><option value="preco">Menor preço</option><option value="data">Data de ida</option><option value="recentes">Pesquisa mais recente</option></select>
+      <button type="button" class="btn btn--ghost btn--sm" id="limpar-ofertas">Limpar</button>
+    </form>
+    <p class="of-intro" id="intro-categoria" hidden></p>
+    <p class="result-count" id="count-ofertas" style="margin:0 0 18px"></p>
+    <div class="grid-ads" id="grid-ofertas"></div>
+  </div>
+</section>
+<section class="section section--tight"><div class="wrap" id="bloco-parcelamento"></div></section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/seed.js"></script>
+<script src="../assets/js/core/precos.js"></script>
+<script src="../assets/js/core/store.js"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/components.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/ofertas.js"></script>
+</body>
+</html>

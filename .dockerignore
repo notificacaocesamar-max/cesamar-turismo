@@ -1,0 +1,6 @@
+*
+!package.json
+!robo/**
+!tools/seed-dados.js
+!frontend/assets/js/core/**
+robo/dados

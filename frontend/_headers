@@ -1,0 +1,9 @@
+# Cloudflare Pages — cabeçalhos de segurança
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+/retaguarda/*
+  X-Robots-Tag: noindex, nofollow

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cruzeiros · Cesamar Turismo</title>
+<meta name="description" content="Cruzeiros pelo Mediterrâneo, Caribe, fiordes da Noruega e costa brasileira com saída do Rio.">
+<meta name="theme-color" content="#111436">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body class="has-hero" data-page="cruzeiros" data-root="../">
+<div id="site-header"></div>
+<main id="conteudo">
+<section class="page-hero on-dark">
+  <img class="bg" src="../assets/img/destinos/cruzeiro-fiordes.svg" alt="">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Você está em"><a href="../index.html">Início</a><span aria-hidden="true">/</span><span>Cruzeiros</span></nav>
+    <span class="eyebrow">Cruzeiros</span>
+    <h1 id="titulo-cruzeiros">Mais de 50 rotas. <em class="a">Um só</em> check-in.</h1>
+    <p class="lead">Desfaça a mala uma vez e acorde em um porto diferente a cada dia. Ajudamos a escolher navio, cabine e itinerário — e cuidamos do aéreo até o embarque.</p>
+  </div>
+</section>
+<section class="section" style="padding-top:60px">
+  <div class="wrap">
+    <div class="section-head"><div><span class="eyebrow">Itinerários em destaque</span><h2>Escolha o seu <em class="a">mar</em></h2></div></div>
+    <div class="grid" id="lista-cruzeiros" style="gap:28px"></div>
+  </div>
+</section>
+<section class="section section--paper">
+  <div class="wrap split" style="align-items:start">
+    <div>
+      <span class="eyebrow">Dúvidas frequentes</span>
+      <h2>Primeira vez em um <em class="a">cruzeiro</em>?</h2>
+      <p class="lead">Separamos as perguntas que mais ouvimos no balcão da agência.</p>
+      <div data-sig-divider></div>
+    </div>
+    <div class="faq">
+      <details open><summary>O que está incluído no valor do cruzeiro?</summary><p>Em geral: cabine, refeições nos restaurantes principais, entretenimento a bordo e a maior parte das áreas de lazer. Bebidas, taxas portuárias e gorjetas costumam ser à parte — detalhamos tudo na proposta.</p></details>
+      <details><summary>Preciso de passaporte?</summary><p>Na temporada pela costa brasileira, basta RG. Para itinerários internacionais é necessário passaporte e, dependendo dos países, visto. Orientamos sobre a documentação de cada itinerário.</p></details>
+      <details><summary>Qual cabine escolher?</summary><p>Interna, externa, com varanda ou suíte: a escolha muda a experiência e o preço. Nossos consultores indicam a melhor relação custo-benefício para o seu perfil.</p></details>
+      <details><summary>Vocês cuidam do aéreo até o porto?</summary><p>Sim. Montamos o pacote completo: voo, hotel pré ou pós-cruzeiro, traslados e seguro viagem.</p></details>
+    </div>
+  </div>
+</section>
+<section class="section" id="cotar">
+  <div class="wrap">
+    <div class="cta-box on-dark reveal">
+      <div><span class="eyebrow">Cotação sem compromisso</span><h2>Vamos encontrar o <em class="a">seu</em> navio.</h2><p class="lead">Diga o itinerário e o mês. Respondemos com as melhores opções de navio e cabine.</p><ul class="contact-list" data-contatos></ul></div>
+      <form class="form" id="cotar-form" data-wa-form="cruzeiros" novalidate>
+  <div class="field full"><label for="cotar-form-dest">Para onde você quer ir?</label><select id="cotar-form-dest" name="destino"></select></div>
+  <div class="field"><label for="cotar-form-mes">Quando</label><select id="cotar-form-mes" name="mes"></select></div>
+  <div class="field"><label for="cotar-form-pes">Viajantes</label><select id="cotar-form-pes" name="pessoas"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option value="6 ou mais">6 ou mais</option></select></div>
+  <div class="field"><label for="cotar-form-origem">Saindo de</label><select id="cotar-form-origem" name="origem"><option>São Paulo ou Rio de Janeiro</option><option>São Paulo</option><option>Rio de Janeiro</option></select></div>
+  <div class="field"><label for="cotar-form-orc">Orçamento por pessoa</label><select id="cotar-form-orc" name="orcamento"><option value="">Prefiro não dizer</option><option>Até R$ 5 mil</option><option>R$ 5 a 10 mil</option><option>R$ 10 a 20 mil</option><option>Acima de R$ 20 mil</option></select></div>
+  <div class="field full"><label for="cotar-form-msg">Algo mais? (opcional)</label><textarea id="cotar-form-msg" name="mensagem" placeholder="Ocasião especial, hotel, datas flexíveis…"></textarea></div>
+  <button class="btn btn--wa full" type="submit">Cotar pelo WhatsApp</button>
+  <p class="consent full">Sua mensagem é aberta no WhatsApp para você enviar. Este site não guarda seus dados pessoais.</p>
+</form>
+    </div>
+  </div>
+</section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/seed.js"></script>
+<script src="../assets/js/core/precos.js"></script>
+<script src="../assets/js/core/store.js"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/components.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/ofertas.js"></script>
+</body>
+</html>

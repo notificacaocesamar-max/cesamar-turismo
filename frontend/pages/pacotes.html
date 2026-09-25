@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Passagem + hotel · Cesamar Turismo</title>
+<meta name="description" content="Pacotes de passagem aérea de ida e volta com hotel, nacionais e internacionais. Atendimento de consultor pelo WhatsApp.">
+<meta name="theme-color" content="#111436">
+<link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body class="has-hero" data-page="pacotes" data-root="../">
+<div id="site-header"></div>
+<main id="conteudo">
+<section class="page-hero on-dark">
+  <img class="bg" src="../assets/img/destinos/japao.svg" alt="">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="Você está em"><a href="../index.html">Início</a><span aria-hidden="true">/</span><span>Pacotes</span></nav>
+    <span class="eyebrow">Passagem + hotel</span>
+    <h1 id="titulo-pacotes">Passagem e hotel, <em class="a">em uma só</em> conversa</h1>
+    <p class="lead">Combinações de passagem aérea de ida e volta com hospedagem. Filtre por estilo, época e orçamento — e ajuste datas e hotel com um consultor.</p>
+  </div>
+</section>
+<section class="section" style="padding-top:56px">
+  <div class="wrap listing">
+    <form class="filters" id="filtros" aria-label="Filtros" onsubmit="return false">
+      <button type="button" class="btn btn--ghost btn--sm close-filters">Fechar ✕</button>
+      <h4>Buscar</h4>
+      <label class="search-in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input name="q" type="search" placeholder="Destino, cidade, tema" aria-label="Buscar"></label>
+      <h4>Destino</h4>
+      <label class="opt"><input type="checkbox" name="tipo" value="nacional"> Brasil</label>
+      <label class="opt"><input type="checkbox" name="tipo" value="internacional"> Internacional</label>
+      <h4>Região</h4><div id="f-regiao"></div>
+      <h4>Estilo de viagem</h4><div id="f-estilo"></div>
+      <h4>Duração</h4>
+      <label class="opt"><input type="radio" name="duracao" value="" checked> Qualquer</label>
+      <label class="opt"><input type="radio" name="duracao" value="curta"> Até 5 noites</label>
+      <label class="opt"><input type="radio" name="duracao" value="media"> 6 a 9 noites</label>
+      <label class="opt"><input type="radio" name="duracao" value="longa"> 10 noites ou mais</label>
+      <h4>Preço por pessoa</h4>
+      <input type="range" name="preco" aria-label="Preço máximo"><div class="range-val" id="preco-val"></div>
+      <h4>Mês da viagem</h4>
+      <select name="mes" style="width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--line-strong)"></select>
+      <h4>Lista</h4>
+      <label class="opt"><input type="checkbox" name="favoritos"> Só meus favoritos ♥</label>
+      <button type="button" class="btn btn--ghost btn--sm btn--block" id="limpar" style="margin-top:20px">Limpar filtros</button>
+    </form>
+    <div>
+      <div class="list-top">
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <button type="button" class="btn btn--ink btn--sm filters-toggle">Filtros</button>
+          <strong id="count-pacotes"></strong>
+          <div class="active-filters" id="ativos"></div>
+        </div>
+        <label><span class="sr-only">Ordenar</span><select id="ordem"><option value="rel">Mais procurados</option><option value="menor">Menor preço</option><option value="maior">Maior preço</option><option value="duracao">Menor duração</option></select></label>
+      </div>
+      <div class="grid" id="grid-pacotes" style="grid-template-columns:repeat(auto-fill,minmax(290px,1fr))"></div>
+    </div>
+  </div>
+</section>
+</main>
+<div id="site-footer"></div>
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/seed.js"></script>
+<script src="../assets/js/core/precos.js"></script>
+<script src="../assets/js/core/store.js"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/components.js"></script>
+<script src="../assets/js/app.js"></script>
+<script src="../assets/js/ofertas.js"></script>
+</body>
+</html>

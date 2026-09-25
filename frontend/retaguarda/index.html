@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel · Cesamar Turismo</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo/favicon.svg">
+<link rel="stylesheet" href="../assets/css/site.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="adm">
+
+<!-- ============ LOGIN ============ -->
+<section class="adm-login" id="login">
+  <form class="adm-login-card" id="form-login">
+    <img src="../assets/img/logo/logo-cesamar.svg" alt="Cesamar Turismo" class="adm-login-logo">
+    <h1>Painel de ofertas</h1>
+    <p class="muted">Robô de passagens, aprovação de anúncios, preços e métricas.</p>
+    <div class="field"><label for="l-user">Seu nome</label><input id="l-user" name="usuario" autocomplete="username" placeholder="Ex.: Alexandre" required></div>
+    <div class="field"><label for="l-senha">Senha</label><input id="l-senha" name="senha" type="password" autocomplete="current-password" required></div>
+    <button class="btn btn--block" type="submit">Entrar</button>
+    <p class="adm-login-msg" id="login-msg" role="status"></p>
+    <p class="adm-demo-note">Versão offline de demonstração: senha inicial <b>cesamar2026</b> (altere em Configurações). Os dados ficam só neste navegador. Na versão online o login é feito pelo Supabase Auth.</p>
+    <a class="link-arrow" href="../index.html" style="font-size:.88rem">← Voltar ao site</a>
+  </form>
+</section>
+
+<!-- ============ APP ============ -->
+<div class="adm-app" id="app" hidden>
+  <aside class="adm-side">
+    <a href="../index.html" class="adm-brand" target="_blank" rel="noopener"><img src="../assets/img/logo/logo-cesamar-white.svg" alt="Cesamar — abrir o site"></a>
+    <nav id="adm-nav">
+      <button data-view="painel" class="on">Painel</button>
+      <button data-view="ofertas">Ofertas <span class="adm-pill" id="pill-pend" hidden>0</span></button>
+      <button data-view="robo">Robô e registros</button>
+      <button data-view="regras">Monitoramento</button>
+      <button data-view="precos">Preços e parcelamento</button>
+      <button data-view="destinos">Destinos e aeroportos</button>
+      <button data-view="textos">Campanhas e textos</button>
+      <button data-view="imagens">Imagens</button>
+      <button data-view="whatsapp">WhatsApp e consultores</button>
+      <button data-view="metricas">Métricas</button>
+      <button data-view="config">Configurações e dados</button>
+    </nav>
+    <div class="adm-side-foot">
+      <div class="adm-farol warn"><i></i><span>Offline · dados neste navegador</span></div>
+      <div class="adm-user"><span id="user-nome"></span><button id="btn-sair" class="adm-link">Sair</button></div>
+    </div>
+  </aside>
+  <main class="adm-main" id="adm-main"></main>
+</div>
+
+<div class="adm-drawer" id="drawer" aria-hidden="true">
+  <div class="adm-drawer-bg" data-close></div>
+  <aside class="adm-drawer-panel" role="dialog" aria-modal="true" aria-label="Detalhes">
+    <button class="adm-x" data-close aria-label="Fechar">✕</button>
+    <div id="drawer-body"></div>
+  </aside>
+</div>
+<div class="toast" role="status" aria-live="polite"></div>
+
+<script src="../assets/js/config.js"></script>
+<script src="../assets/js/seed.js"></script>
+<script src="../assets/js/core/precos.js"></script>
+<script src="../assets/js/core/provedores.js"></script>
+<script src="../assets/js/core/robo.js"></script>
+<script src="../assets/js/core/store.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
