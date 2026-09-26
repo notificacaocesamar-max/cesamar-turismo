@@ -33,6 +33,21 @@ const catalogo = {
     { local: true, alt: "Obelisco de Buenos Aires iluminado à noite" },
     { local: true, alt: "Obelisco de Buenos Aires sob o céu azul" },
   ] },
+  "fernando-de-noronha": { ponto: "Fernando de Noronha, Pernambuco", fotos: [
+    ["Arquipélago de Fernando de Noronha.jpg", "Arquipélago de Fernando de Noronha visto do alto", "Canindé Soares", "CC BY-SA 4.0"],
+  ] },
+  gramado: { ponto: "Gramado, Rio Grande do Sul", fotos: [
+    ["Natal Luz em Gramado.jpg", "Luzes do Natal Luz em Gramado", "Felipe Valduga", "CC BY 2.0"],
+  ] },
+  jericoacoara: { ponto: "Jericoacoara, Ceará", fotos: [
+    ["Jericoacoara - Ceará - Brasil.JPG", "Dunas e pôr do sol em Jericoacoara", "Sibelicarvalho", "CC BY-SA 3.0"],
+  ] },
+  bonito: { ponto: "Bonito, Mato Grosso do Sul", fotos: [
+    ["Gruta do Lago Azul em Bonito.jpg", "Gruta do Lago Azul em Bonito", "Marcel Favery", "CC BY-SA 3.0"],
+  ] },
+  "lencois-maranhenses": { ponto: "Lençóis Maranhenses, Maranhão", fotos: [
+    ["Mar2024. Lençóis Maranhenses, Maranhão, Brazil Lencois 07.jpg", "Dunas e lagoas dos Lençóis Maranhenses", "Ridiculopathy", "CC0 1.0"],
+  ] },
 };
 
 function arquivo(destinoId, indice) { return "assets/img/biblioteca/" + destinoId + "/" + String(indice + 1).padStart(2, "0") + ".jpg"; }

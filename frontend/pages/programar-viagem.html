@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="no-js">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planeje seu sonho · Cesamar Turismo</title>
+<meta name="description" content="Conte seu sonho de viagem e receba oportunidades que combinam com seu destino, período e orçamento.">
+<meta name="theme-color" content="#111436"><link rel="stylesheet" href="../assets/css/site.css">
+</head>
+<body class="has-hero" data-page="programar-viagem" data-root="../">
+<div id="site-header"></div><main id="conteudo">
+<section class="page-hero on-dark"><img class="bg" src="../assets/img/destinos/maldivas.svg" alt="">
+  <div class="wrap"><nav class="crumbs" aria-label="Você está em"><a href="../index.html">Início</a><span>/</span><span>Planeje seu sonho</span></nav>
+  <span class="eyebrow">Seu radar personalizado</span><h1>Conte seu sonho. Nós buscamos a <em class="a">oportunidade certa</em>.</h1>
+  <p class="lead">Informe o destino, o período e o orçamento. A Cesamar acompanhará as tarifas e entrará em contato quando surgir algo próximo do que você deseja.</p></div>
+</section>
+<section class="section" style="padding-top:60px"><div class="wrap split plan-trip">
+  <div><span class="eyebrow">Como funciona</span><h2>Uma busca feita para <em class="a">você</em></h2><p class="lead">Quanto antes você planejar, mais combinações podemos acompanhar.</p>
+    <div class="steps steps--stack"><div class="step"><h3>Você conta o sonho</h3><p>Destino, período e quanto deseja investir nas passagens.</p></div><div class="step"><h3>Montamos seu radar</h3><p>Acompanhamos oportunidades que se aproximem do seu perfil.</p></div><div class="step"><h3>Entramos em contato</h3><p>Quando encontrarmos uma boa combinação, um consultor fala com você.</p></div></div>
+  </div>
+  <form class="form plan-form" id="programar-form" novalidate>
+    <div class="field full"><label for="pv-nome">Nome completo</label><input id="pv-nome" name="nome" autocomplete="name" required minlength="3"></div>
+    <div class="field full"><label for="pv-destino">Para onde deseja viajar?</label><input id="pv-destino" name="destino" placeholder="Ex.: Lisboa, Japão ou Nordeste" required minlength="2"></div>
+    <div class="field"><label for="pv-inicio">A partir de</label><input id="pv-inicio" name="periodoInicio" type="month" required><small>Planejamento com pelo menos 3 meses de antecedência.</small></div>
+    <div class="field"><label for="pv-fim">Até</label><input id="pv-fim" name="periodoFim" type="month" required></div>
+    <div class="field"><label for="pv-telefone">Telefone/WhatsApp</label><input id="pv-telefone" name="telefone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(21) 99999-9999" required></div>
+    <div class="field"><label for="pv-email">E-mail</label><input id="pv-email" name="email" type="email" autocomplete="email" required></div>
+    <div class="field full"><label for="pv-orcamento">Orçamento destinado às passagens</label><input id="pv-orcamento" name="orcamento" type="number" min="500" step="100" inputmode="decimal" placeholder="R$ 8.000" required></div>
+    <label class="consent full"><input type="checkbox" name="consentimento" required> Autorizo a Cesamar a usar estes dados para acompanhar ofertas e entrar em contato sobre esta viagem.</label>
+    <div class="form-msg" id="programar-msg" role="status" aria-live="polite"></div>
+    <button class="btn btn--ink full" type="submit">Criar meu radar de viagem</button>
+  </form>
+</div></section></main><div id="site-footer"></div>
+<script src="../assets/js/config.js"></script><script src="../assets/js/data.js"></script><script src="../assets/js/seed.js"></script><script src="../assets/js/core/precos.js"></script><script src="../assets/js/core/store.js"></script><script src="../assets/js/api.js"></script><script src="../assets/js/components.js"></script><script src="../assets/js/app.js"></script><script src="../assets/js/programar-viagem.js"></script>
+</body></html>

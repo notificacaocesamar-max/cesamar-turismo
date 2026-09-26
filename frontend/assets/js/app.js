@@ -15,7 +15,10 @@
   var MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
   var ESTILOS = [["praia", "Praia e sol"], ["lua-de-mel", "Lua de mel"], ["natureza", "Natureza"], ["aventura", "Aventura"], ["cultura", "Cultura e história"], ["cidade", "Grandes cidades"], ["gastronomia", "Gastronomia"], ["familia", "Em família"], ["luxo", "Premium"], ["serra", "Serra e frio"]];
   function estiloNome(k) { var e = ESTILOS.filter(function (x) { return x[0] === k; })[0]; return e ? e[1] : k; }
-  function imgDestino(slug, dest) { return ROOT + "assets/img/destinos/" + ((dest && dest.imagem) || slug + ".svg"); }
+  function imgDestino(slug, dest) {
+    var imagem = (dest && dest.imagem) || slug + ".svg";
+    return ROOT + (imagem.indexOf("assets/") === 0 ? imagem : "assets/img/destinos/" + imagem);
+  }
   function toast(msg) { var t = $(".toast"); if (!t) return; t.innerHTML = msg; t.classList.add("show"); clearTimeout(toast._t); toast._t = setTimeout(function () { t.classList.remove("show"); }, 3200); }
 
   var DATA = { destinos: [], pacotes: [], cruzeiros: [] }, DEST = {};
@@ -251,42 +254,50 @@
 
   /* =========================================================== DESTINOS */
   function initDestinos() {
-    // Mundo: os destinos monitorados pelo robô (ofertas de passagem) · Brasil: passagem + hotel
-    var ST = window.Cesamar.store, estado = { tipo: "", regiao: "" };
-    var grid = $("#grid-destinos"), chips = $("#filtro-destinos"), busca = $("#busca-destinos");
+    var ST = window.Cesamar.store, nacional = PAGE === "destinos-nacionais", estado = { regiao: "", local: "" };
+    var grid = $("#grid-destinos"), categorias = $("#grid-categorias"), chips = $("#filtro-destinos"), busca = $("#busca-destinos");
     var mundo = ST.carregar().destinos.filter(function (d) { return d.ativo; }).map(function (d) {
       var n = ST.publicadas().filter(function (o) { return o.destinoId === d.id; }).length, ct = ST.conteudo(d.id) || {};
       var im = ST.imagemPrincipal(d.id);
       return { slug: d.id, nome: d.nomeExibicao || d.nome, local: d.cidade + ", " + d.nome, tipo: "internacional", regiao: d.regiao, chamada: ct.tituloEmocional || "",
-        imagem: im ? im.url.replace("assets/img/destinos/", "") : d.arte + ".svg", temas: d.campanhas || [], _href: ROOT + "pages/ofertas.html?destino=" + d.id,
+        imagem: im ? im.url : d.arte + ".svg", temas: d.campanhas || [], _href: ROOT + "pages/ofertas.html?destino=" + d.id,
         _badge: '<span class="tag tag--glass">' + (n ? n + (n > 1 ? " ofertas" : " oferta") : "Sob consulta") + "</span>" };
     });
     var brasil = DATA.destinos.filter(function (d) { return d.tipo === "nacional"; }).map(function (d) {
-      return Object.assign({}, d, { _href: ROOT + "pages/pacotes.html?destino=" + d.slug, _badge: '<span class="tag tag--glass">Passagem + hotel</span>' });
+      var ofertas = ((window.CESAMAR_RADAR || {}).ofertas || []).filter(function (o) { return o.destinoId === d.slug; }).length;
+      return Object.assign({}, d, { pais: "Brasil", imagem: "assets/img/biblioteca/" + d.slug + "/01.jpg", _href: ROOT + "pages/ofertas.html?destino=" + d.slug,
+        _badge: '<span class="tag tag--glass">' + (ofertas ? ofertas + (ofertas > 1 ? " ofertas" : " oferta") : "Sob consulta") + '</span>' });
     });
-    var todos = mundo.concat(brasil);
-    var regioes = []; todos.forEach(function (d) { if (regioes.indexOf(d.regiao) < 0) regioes.push(d.regiao); });
-    chips.innerHTML = '<button class="chip" data-tipo="" aria-pressed="true">Todos</button><button class="chip" data-tipo="internacional" aria-pressed="false">Mundo</button><button class="chip" data-tipo="nacional" aria-pressed="false">Brasil</button><span style="width:1px;background:var(--line-strong);margin:0 6px"></span>' +
-      regioes.map(function (r) { return '<button class="chip" data-regiao="' + esc(r) + '" aria-pressed="false">' + esc(r) + "</button>"; }).join("");
+    var todos = nacional ? brasil : mundo;
+    var regioes = [], locais = []; todos.forEach(function (d) {
+      if (regioes.indexOf(d.regiao) < 0) regioes.push(d.regiao);
+      var local = nacional ? d.local : (d.local || "").split(", ").pop();
+      if (local && locais.indexOf(local) < 0) locais.push(local);
+    });
+    regioes.sort(); locais.sort();
+    categorias.innerHTML = regioes.map(function (regiao) {
+      var representante = todos.filter(function (d) { return d.regiao === regiao; })[0];
+      var quantidade = todos.filter(function (d) { return d.regiao === regiao; }).length;
+      return '<button class="region-card reveal" type="button" data-regiao="' + esc(regiao) + '"><img src="' + imgDestino(representante.slug, representante) + '" alt=""><span><small>' + (nacional ? "Região" : "Continente") + '</small><b>' + esc(regiao) + '</b><em>' + quantidade + (quantidade === 1 ? " destino" : " destinos") + '</em></span></button>';
+    }).join("");
+    revelar(categorias);
+    chips.innerHTML = '<label><span class="sr-only">' + (nacional ? "Região" : "Continente") + '</span><select id="filtro-regiao"><option value="">' + (nacional ? "Todas as regiões" : "Todos os continentes") + '</option>' + regioes.map(function (r) { return '<option>' + esc(r) + '</option>'; }).join("") + '</select></label>' +
+      '<label><span class="sr-only">' + (nacional ? "Estado" : "País") + '</span><select id="filtro-local"><option value="">' + (nacional ? "Todos os estados" : "Todos os países") + '</option>' + locais.map(function (r) { return '<option>' + esc(r) + '</option>'; }).join("") + '</select></label>';
+    var filtroRegiao = $("#filtro-regiao"), filtroLocal = $("#filtro-local");
     function render() {
       var q = (busca.value || "").toLowerCase();
       var l = todos.filter(function (d) {
-        return (!estado.tipo || d.tipo === estado.tipo) && (!estado.regiao || d.regiao === estado.regiao) &&
+        var local = nacional ? d.local : (d.local || "").split(", ").pop();
+        return (!estado.regiao || d.regiao === estado.regiao) && (!estado.local || local === estado.local) &&
           (!q || (d.nome + " " + d.local + " " + d.regiao).toLowerCase().indexOf(q) >= 0);
       });
       grid.innerHTML = l.length ? l.map(function (d) { return posterCard(d, { href: d._href, badge: d._badge }); }).join("") : '<p class="empty">Nenhum destino encontrado. <a class="link-arrow" href="' + window.Cesamar.waLink() + '">Fale com um consultor ' + icon("arrow") + "</a></p>";
       $("#count-destinos").textContent = l.length + (l.length === 1 ? " destino" : " destinos");
       revelar(grid);
     }
-    chips.addEventListener("click", function (e) {
-      var b = e.target.closest(".chip"); if (!b) return;
-      if (b.hasAttribute("data-tipo")) { estado.tipo = b.dataset.tipo; estado.regiao = ""; }
-      else { estado.regiao = estado.regiao === b.dataset.regiao ? "" : b.dataset.regiao; }
-      $$(".chip", chips).forEach(function (x) {
-        x.setAttribute("aria-pressed", String(x.hasAttribute("data-tipo") ? (x.dataset.tipo === estado.tipo && !estado.regiao) : x.dataset.regiao === estado.regiao));
-      });
-      render();
-    });
+    filtroRegiao.addEventListener("change", function () { estado.regiao = this.value; render(); });
+    filtroLocal.addEventListener("change", function () { estado.local = this.value; render(); });
+    categorias.addEventListener("click", function (e) { var card = e.target.closest("[data-regiao]"); if (!card) return; estado.regiao = card.dataset.regiao; filtroRegiao.value = estado.regiao; render(); document.getElementById("lista-destinos").scrollIntoView({ behavior: "smooth", block: "start" }); });
     busca.addEventListener("input", render);
     render();
   }
@@ -478,7 +489,7 @@
     document.documentElement.setAttribute("data-fonte", api ? "api" : "local");
     try {
       if (PAGE === "home") initHome();
-      else if (PAGE === "destinos") initDestinos();
+      else if (PAGE === "destinos" || PAGE === "destinos-nacionais" || PAGE === "destinos-internacionais") initDestinos();
       else if (PAGE === "pacotes") initPacotes();
       else if (PAGE === "pacote") initPacote();
       else if (PAGE === "cruzeiros") initCruzeiros();

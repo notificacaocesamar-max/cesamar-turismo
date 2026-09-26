@@ -1,12 +1,16 @@
 /* Configuração central do site Cesamar Turismo.
    Altere aqui contatos e o endereço da API — nenhum outro arquivo precisa mudar. */
 window.CESAMAR_CONFIG = {
+  supabase: {
+    url: "https://cwohbclwyqsfuysfobce.supabase.co",
+    publishableKey: "sb_publishable_-zwf2vobwshQnpFxa_QAaQ_s861Dh62"
+  },
   // Backend .NET (ver start-local-backend.ps1). Se estiver desligado, o site usa assets/js/data.js
   apiBase: "", // versão offline: vazio. Na versão online, informe a URL da API (ex.: https://api.seudominio.com.br/api)
   apiTimeoutMs: 1800,
 
   // Mostra a faixa "Protótipo · conteúdo e preços ilustrativos" no topo
-  prototipo: true,
+  prototipo: false,
 
   // Chave temporária: mude para true para restaurar WhatsApp, e-mail,
   // telefones e os formulários que encaminham o visitante ao WhatsApp.

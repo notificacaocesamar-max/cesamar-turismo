@@ -406,6 +406,24 @@ body.menu-open .site-header .brand .bird, body.menu-open .site-header .brand .wo
 .toolbar .search-in svg { width: 18px; color: var(--muted); }
 .toolbar .search-in input { border: 0; background: transparent; outline: none; padding: 11px 0; width: 100%; }
 .toolbar select { padding: 10px 14px; border-radius: var(--r-pill); border: 1px solid var(--line-strong); background: #fff; }
+.nav a[href$="programar-viagem.html"] { background: var(--coral); color: #fff; }
+.nav a[href$="programar-viagem.html"]:hover { background: #c92f35; opacity: 1; }
+.plan-form { padding: clamp(22px, 4vw, 38px); background: var(--paper); border: 1px solid var(--line); border-radius: 24px; box-shadow: var(--sh-2); }
+.plan-form .field small { color: var(--muted); font-size: .72rem; line-height: 1.45; }
+.plan-form .consent { display: flex; align-items: flex-start; gap: 10px; }
+.plan-form .consent input { margin-top: 3px; flex: 0 0 auto; }
+.steps--stack { grid-template-columns: 1fr; margin-top: 28px; }
+.region-showcase { padding-bottom: 20px; }
+.region-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 18px; margin-top: 28px; }
+.region-card { position: relative; min-height: 230px; overflow: hidden; border: 0; border-radius: 22px; padding: 0; color: #fff; text-align: left; cursor: pointer; box-shadow: var(--sh-2); isolation: isolate; }
+.region-card::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg,rgba(10,12,40,.9),rgba(10,12,40,.05) 75%); }
+.region-card img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--ease); }
+.region-card:hover img { transform: scale(1.06); }
+.region-card span { position: absolute; inset: auto 20px 18px; display: grid; gap: 2px; }
+.region-card small { text-transform: uppercase; letter-spacing: .12em; font-size: .65rem; }
+.region-card b { font: 600 1.45rem/1.1 var(--f-display); }
+.region-card em { font-style: normal; font-size: .76rem; opacity: .8; }
+@media (max-width: 1450px) { .nav a { padding-left: 8px; padding-right: 8px; font-size: .76rem; } }
 .result-count { font-size: .88rem; color: var(--muted); }
 .empty { text-align: center; padding: 60px 20px; color: var(--muted); grid-column: 1 / -1; }
 
@@ -865,3 +883,5 @@ html { overflow-x: clip; }
 .lp-final-actions .btn { white-space: normal; }
 .lp-sticky { transform: translateY(160%); transition: transform .4s var(--ease); }
 .lp-sticky.show { transform: none; }
+/* Atendimento dinâmico */
+.lead-modal{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:20px}.lead-modal-bg{position:absolute;inset:0;background:rgba(9,12,35,.72);backdrop-filter:blur(5px)}.lead-modal-card{position:relative;width:min(680px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:22px;padding:clamp(24px,5vw,42px);box-shadow:0 30px 90px rgba(0,0,0,.3)}.lead-modal-card h2{margin:.35rem 0 .6rem}.lead-modal-x{position:absolute;right:16px;top:12px;border:0;background:none;font-size:2rem;cursor:pointer}.lead-modal-msg{min-height:1.4em;color:#a33}.lead-ok{padding:24px;border-radius:14px;background:#eef9f2;color:#175b36}.modal-open{overflow:hidden}.is-loading{pointer-events:none;opacity:.65}

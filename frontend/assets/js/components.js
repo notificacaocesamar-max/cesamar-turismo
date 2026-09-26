@@ -62,9 +62,10 @@
 
   var NAV = [
     ["ofertas", "Ofertas", "pages/ofertas.html"],
-    ["destinos", "Destinos", "pages/destinos.html"],
-    ["pacotes", "Passagem + hotel", "pages/pacotes.html"],
+    ["destinos-nacionais", "Destinos nacionais", "pages/destinos-nacionais.html"],
+    ["destinos-internacionais", "Destinos internacionais", "pages/destinos-internacionais.html"],
     ["cruzeiros", "Cruzeiros", "pages/cruzeiros.html"],
+    ["programar-viagem", "Planeje seu sonho", "pages/programar-viagem.html"],
     ["quem-somos", "Quem somos", "pages/quem-somos.html"],
     ["contato", "Contato", "pages/contato.html"]
   ];
@@ -112,11 +113,12 @@
       '<header class="site-header"><div class="wrap">' + brand() +
       '<nav class="nav" aria-label="Principal">' + links + "</nav>" +
       languageSwitcher() +
-      '<div class="header-cta"><a class="fav-link" href="' + ROOT + 'pages/pacotes.html?favoritos=1" aria-label="Meus favoritos">' + icon("heart") + '<span class="fav-count" hidden>0</span></a><a class="btn btn--sm btn--wa" href="' + waLink() + '" target="_blank" rel="noopener" data-wa-geral>' + icon("whatsapp") + 'Falar com um consultor</a></div>' +
+      '<div class="header-cta"><a class="btn btn--sm btn--ghost equipe-login" href="' + ROOT + 'retaguarda/index.html">Login da equipe</a><a class="fav-link" href="' + ROOT + 'pages/pacotes.html?favoritos=1" aria-label="Meus favoritos">' + icon("heart") + '<span class="fav-count" hidden>0</span></a><a class="btn btn--sm btn--wa" href="' + waLink() + '" target="_blank" rel="noopener" data-wa-geral>' + icon("whatsapp") + 'Falar com um consultor</a></div>' +
       '<button class="menu-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-nav"><span></span></button>' +
       "</div></header>" +
       '<nav class="mobile-nav" id="mobile-nav" aria-label="Menu">' +
       '<a href="' + ROOT + 'index.html">Início</a>' + NAV.map(function (n) { return '<a href="' + ROOT + n[2] + '">' + n[1] + "</a>"; }).join("") +
+      '<a href="' + ROOT + 'retaguarda/index.html">Login da equipe</a>' +
       '<a class="btn btn--wa" href="' + waLink() + '" target="_blank" rel="noopener">' + icon("whatsapp") + "Falar no WhatsApp</a></nav>";
   }
 
@@ -202,6 +204,12 @@
   Array.prototype.forEach.call(document.querySelectorAll("[data-map]"), function (el) { el.outerHTML = mapa(); });
   Array.prototype.forEach.call(document.querySelectorAll("a[data-wa-geral]"), function (el) { el.href = waLink(); el.target = "_blank"; el.rel = "noopener"; });
   Array.prototype.forEach.call(document.querySelectorAll("a[data-wa]"), function (el) { el.href = waLink(); el.target = "_blank"; el.rel = "noopener"; el.insertAdjacentHTML("afterbegin", icon("whatsapp")); });
+
+  // Roteamento de atendimento e formulário de contingência, disponíveis em todas as páginas.
+  var atendimento = document.createElement("script");
+  atendimento.src = ROOT + "assets/js/atendimento.js";
+  atendimento.defer = true;
+  document.body.appendChild(atendimento);
   Array.prototype.forEach.call(document.querySelectorAll("[data-stamp-mark]"), function (el) { el.innerHTML = logoMark(); });
   Array.prototype.forEach.call(document.querySelectorAll("[data-contatos]"), function (el) {
     el.innerHTML =
