@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Definir senha · Cesamar Turismo</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/svg+xml" href="../assets/img/logo/favicon.svg">
+<link rel="stylesheet" href="../assets/css/site.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="adm">
+<section class="adm-login">
+  <form class="adm-login-card" id="form-senha">
+    <img src="../assets/img/logo/logo-cesamar.svg" alt="Cesamar Turismo" class="adm-login-logo">
+    <h1>Crie sua senha</h1>
+    <p class="muted">Use pelo menos 12 caracteres, combinando letras maiúsculas, minúsculas, números e símbolo.</p>
+    <div class="field"><label for="senha">Nova senha</label><input id="senha" type="password" minlength="12" autocomplete="new-password" required></div>
+    <div class="field"><label for="confirmacao">Confirmar senha</label><input id="confirmacao" type="password" minlength="12" autocomplete="new-password" required></div>
+    <button class="btn btn--block" type="submit">Salvar senha e continuar</button>
+    <p class="adm-login-msg" id="mensagem" role="status"></p>
+  </form>
+</section>
+<script src="../assets/js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="definir-senha.js"></script>
+</body>
+</html>
