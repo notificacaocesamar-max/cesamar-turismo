@@ -21,6 +21,19 @@ function extrairPreco(texto) {
   validos.sort((a, b) => a.valor - b.valor);
   return validos[0] || null;
 }
+function extrairRotas(texto) {
+  const limpo = limpar(texto), rotas = [], vistos = {};
+  const re = /(São Paulo|Rio de Janeiro|Campinas\s*\/\s*SP)\s+([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ '\/-]{1,45}?)\s+A partir de R\$\s*([0-9]{1,3}(?:\.[0-9]{3})*(?:,[0-9]{2})?)/gi;
+  for (const m of limpo.matchAll(re)) {
+    const origem = /Rio/i.test(m[1]) ? "RIO" : "SAO";
+    const destino = limpar(m[2]);
+    const preco = Number(m[3].replace(/\./g, "").replace(",", "."));
+    const chave = origem + "|" + destino.toLowerCase();
+    if (preco >= 100 && preco <= 100000 && (!vistos[chave] || preco < vistos[chave].preco)) vistos[chave] = { origem, destino, preco };
+  }
+  Object.keys(vistos).forEach((k) => rotas.push(vistos[k]));
+  return rotas;
+}
 
 async function obter(fetchFn, url, agente) {
   const r = await fetchFn(url, { headers: { "user-agent": agente, accept: "text/html,application/xhtml+xml" } });
@@ -39,6 +52,7 @@ async function passagensImperdiveis(opcoes) {
   for (const url of unicos) {
     try {
       const html = await obter(fetchFn, url, agente);
+      const textoPagina = limpar(html.replace(/<script[\s\S]*?<\/script>/gi, " ").replace(/<style[\s\S]*?<\/style>/gi, " "));
       const titulo = meta(html, "og:title") || limpar((html.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1]);
       const descricao = meta(html, "og:description") || meta(html, "description");
       const preco = extrairPreco(titulo + " " + descricao + " " + limpar(html));
@@ -46,7 +60,8 @@ async function passagensImperdiveis(opcoes) {
         id: id(url), fonte: "Passagens Imperdíveis", url, titulo,
         precoEncontrado: preco ? preco.valor : null, precoTexto: preco ? preco.texto : null,
         capturadoEm: agora, status: "aguardando_confirmacao", uso: "radar",
-        observacao: "Preço divulgado por terceiro; confirmar no fornecedor antes de publicar."
+        rotas: extrairRotas(textoPagina),
+        observacao: "Preço divulgado por terceiro; disponibilidade deve ser confirmada no fornecedor."
       });
     } catch (e) {
       saida.push({ id: id(url), fonte: "Passagens Imperdíveis", url, titulo: "Falha ao consultar oportunidade", capturadoEm: agora, status: "erro", uso: "radar", observacao: e.message });
@@ -55,4 +70,4 @@ async function passagensImperdiveis(opcoes) {
   return saida;
 }
 
-module.exports = { passagensImperdiveis, extrairPreco, limpar };
+module.exports = { passagensImperdiveis, extrairPreco, extrairRotas, limpar };

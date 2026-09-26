@@ -1,0 +1,42 @@
+name: Atualizar ofertas automaticamente
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cesamar-radar-publicador
+  cancel-in-progress: false
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm test
+      - name: Buscar e comparar ofertas
+        env:
+          RADAR_PI_LIMITE: "15"
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node tools/publicar-radar.js
+      - name: Publicar arquivo atualizado
+        shell: bash
+        run: |
+          if git diff --quiet -- frontend/assets/js/radar-publicado.js; then
+            echo "Nenhuma alteração nas ofertas."
+            exit 0
+          fi
+          git config user.name "Cesamar Radar"
+          git config user.email "actions@users.noreply.github.com"
+          git add frontend/assets/js/radar-publicado.js
+          git commit -m "Atualizar ofertas automaticas do radar"
+          git push

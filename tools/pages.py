@@ -272,7 +272,7 @@ phero('maldivas', 'Contato', 'Contato', 'Vamos planejar a sua <em class="a">pró
 
 # ------------------------------------------------------------------ OFERTAS (listagem)
 pages['ofertas'] = page('ofertas', 'Ofertas de passagens', 'Ofertas de passagens aéreas internacionais de ida e volta saindo de São Paulo e do Rio de Janeiro, selecionadas por consultores da Cesamar.',
-phero('italia', 'Ofertas', 'Ofertas de passagem aérea', 'Oportunidades de ida e volta <em class="a">selecionadas</em>', 'Pesquisamos todos os dias saindo de São Paulo (GRU, CGH, VCP) e do Rio de Janeiro (GIG, SDU). Um consultor revisa cada oferta antes de ela aparecer aqui.') + f'''
+phero('italia', 'Ofertas', 'Ofertas de passagem aérea', 'Oportunidades de ida e volta <em class="a">selecionadas</em>', 'O robô pesquisa todos os dias ofertas saindo de São Paulo e do Rio de Janeiro. Quando encontra um preço melhor, atualiza o portal automaticamente; cada oportunidade permanece por até três dias.') + f'''
 <section class="section" style="padding-top:48px">
   <div class="wrap">
     <form class="of-filters" id="filtros-ofertas" aria-label="Filtrar ofertas" onsubmit="return false">

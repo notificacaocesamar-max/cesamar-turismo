@@ -9,7 +9,7 @@
   var C = window.Cesamar, ST = C.store, P = C.precos, icon = C.icon, ROOT = C.ROOT;
   var PAGE = document.body.getAttribute("data-page");
   var MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
-  var TIPO = { ao_vivo: ["Preço ao vivo", "tp-live"], indicativo: ["Preço indicativo", "tp-ind"], manual: ["Oferta preparada manualmente", "tp-man"], demonstrativo: ["Conteúdo demonstrativo", "tp-demo"] };
+  var TIPO = { ao_vivo: ["Preço ao vivo", "tp-live"], indicativo: ["Preço indicativo", "tp-ind"], manual: ["Oferta preparada manualmente", "tp-man"], demonstrativo: ["Conteúdo demonstrativo", "tp-demo"], radar: ["Oferta encontrada pelo robô", "tp-live"] };
   var CLASSE = { economica: "Econômica", premium: "Premium economy", executiva: "Executiva" };
 
   function $(s, el) { return (el || document).querySelector(s); }
@@ -59,6 +59,10 @@
     });
   }
   function img(destinoId, oferta) { var i = imagensOferta(destinoId, oferta)[0]; return i ? { src: ROOT + i.url, alt: i.alt } : { src: "", alt: "" }; }
+  function radarAtivas() {
+    var agora = Date.now(), dados = window.CESAMAR_RADAR || { ofertas: [] };
+    return (dados.ofertas || []).filter(function (o) { return o.status === "publicado_automaticamente" && new Date(o.expiraEm).getTime() > agora && ST.destino(o.destinoId); });
+  }
 
   /* ------------------------------------------------------------ bloco de preço (total + parcela + aviso) */
   function precoHTML(o, grande) {
@@ -90,6 +94,19 @@
       '<div class="ad-actions"><a class="btn btn--ink" href="' + urlOferta(o) + '" data-conhecer>Conhecer esta oportunidade</a>' +
       '<a class="btn btn--wa" href="' + ST.linkWhatsOferta(o) + '" target="_blank" rel="noopener" data-wa-oferta="' + esc(o.codigo) + '">' + icon("whatsapp") + "Falar com um consultor</a></div>" +
       "</div></article>";
+  }
+
+  function cardRadar(o) {
+    var d = ST.destino(o.destinoId) || {}, im = img(o.destinoId, o);
+    var origem = o.cidadeOrigem === "RIO" ? "Rio de Janeiro" : "São Paulo";
+    return '<article class="ad reveal" data-codigo="' + esc(o.codigo) + '">' +
+      '<a class="ad-media" href="' + esc(o.fonteUrl) + '" target="_blank" rel="noopener nofollow"><img src="' + im.src + '" alt="" loading="lazy"><div class="ad-tags">' + tipoTag({ tipoPreco: "radar" }) + '<span class="tag tag--sun">Atualização automática</span></div><span class="ad-code">' + esc(o.codigo) + '</span></a>' +
+      '<div class="ad-body"><span class="ad-kicker">Passagem de ida e volta · ' + esc(o.destinoNome) + '</span><h3>' + esc(o.destinoNome) + ' saindo de ' + esc(origem) + '</h3>' +
+      '<p class="ad-sub">Oferta encontrada pelo robô e publicada automaticamente.</p>' +
+      '<ul class="ad-facts" aria-label="Informações disponíveis"><li>' + icon("calendar") + '<span>Datas disponíveis na fonte</span></li><li>' + icon("pin") + '<span>Saindo de ' + esc(origem) + '</span></li><li>' + icon("route") + '<span>Escalas a confirmar</span></li><li>' + icon("bag") + '<span>Bagagem a confirmar</span></li><li>' + icon("check") + '<span>' + (o.taxasInclusas ? "Taxas incluídas" : "Taxas a confirmar") + '</span></li></ul>' +
+      precoHTML(o) + '<p class="ad-note">Valor por pessoa, sujeito a alteração e disponibilidade na fonte. Consulte datas, bagagem e condições antes da compra.</p>' +
+      '<p class="ad-fresh">' + icon("clock") + '<span>' + esc(horarioPesquisa(o)) + ' Oferta válida no portal por até 3 dias.</span></p>' +
+      '<div class="ad-actions"><a class="btn btn--ink" href="' + esc(o.fonteUrl) + '" target="_blank" rel="noopener nofollow">Ver oferta original</a></div></div></article>';
   }
 
   /* ------------------------------------------------------------ métricas (cliques) */
@@ -145,8 +162,8 @@
       .sort(function (a, b) { return (a.preco.precoParcelado / tetos[a.destinoId]) - (b.preco.precoParcelado / tetos[b.destinoId]); }).slice(0, 4);
     var g = $("#grid-destaques");
     if (g) {
-      var destaques = principais.concat(imperdiveis).slice(0, 6);
-      g.innerHTML = destaques.length ? destaques.map(function (o) { return cardOferta(o, { selo: (o.destinoId === "portugal" || o.destinoId === "porto") ? "Destaque Portugal" : "Oferta imperdível" }); }).join("") : '<p class="empty">Novas oportunidades em breve. <a class="link-arrow" href="' + ST.linkWhatsGeral() + '">Fale com um consultor</a></p>';
+      var radar = radarAtivas().slice(0, 4), destaques = principais.concat(imperdiveis).slice(0, Math.max(2, 6 - radar.length));
+      g.innerHTML = destaques.map(function (o) { return cardOferta(o, { selo: (o.destinoId === "portugal" || o.destinoId === "porto") ? "Destaque Portugal" : "Oferta imperdível" }); }).join("") + radar.map(cardRadar).join("");
     }
     // seções por campanha (ordem definida no painel)
     var box = $("#secoes-campanhas");
@@ -198,10 +215,12 @@
         if (v.ord === "recentes") return b.pesquisadoEm.localeCompare(a.pesquisadoEm);
         return a.preco.precoParcelado - b.preco.precoParcelado;
       });
-      grid.innerHTML = lista.map(function (o) { return cardOferta(o, { campanha: v.cat || null }); }).join("") +
+      var radar = radarAtivas().filter(function (o) { var d = ST.destino(o.destinoId) || {}; return (!v.dest || o.destinoId === v.dest) && (!v.orig || o.cidadeOrigem === v.orig) && (!v.reg || d.regiao === v.reg) && !v.mes && !v.cat; });
+      grid.innerHTML = radar.map(cardRadar).join("") + lista.map(function (o) { return cardOferta(o, { campanha: v.cat || null }); }).join("") +
         '<article class="ad ad--consulta ad--cta"><div class="ad-body"><span class="eyebrow">Atendimento personalizado</span><h3>' + (lista.length ? "Não achou a data ideal?" : "Nenhuma oferta com esses filtros agora.") +
         '</h3><p class="ad-sub">Um consultor procura a melhor combinação de datas, origem e preço para você.</p><div class="ad-actions"><a class="btn btn--wa" href="' + ST.linkWhatsGeral() + '" target="_blank" rel="noopener">' + icon("whatsapp") + "Falar com um consultor</a></div></div></article>";
-      $("#count-ofertas").textContent = lista.length + (lista.length === 1 ? " oportunidade publicada" : " oportunidades publicadas");
+      var total = lista.length + radar.length;
+      $("#count-ofertas").textContent = total + (total === 1 ? " oportunidade publicada" : " oportunidades publicadas");
       var cat = v.cat && db().campanhas.filter(function (c) { return c.id === v.cat; })[0];
       var intro = $("#intro-categoria");
       intro.hidden = !cat;

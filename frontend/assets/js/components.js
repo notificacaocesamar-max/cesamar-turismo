@@ -108,7 +108,7 @@
       return n[0] === "ofertas" ? '<div class="nav-item">' + a + megaMenu() + "</div>" : a;
     }).join("");
     return '<a class="skip" href="#conteudo">Pular para o conteúdo</a>' +
-      (CFG.prototipo ? '<div class="proto-bar"><b>Versão de demonstração</b> · preços simulados; fotos reais identificadas e licenciadas</div>' : "") +
+      (CFG.prototipo ? '<div class="proto-bar"><b>Site em implantação</b> · ofertas automáticas identificadas; tarifas devem ser confirmadas na fonte</div>' : "") +
       '<header class="site-header"><div class="wrap">' + brand() +
       '<nav class="nav" aria-label="Principal">' + links + "</nav>" +
       languageSwitcher() +
