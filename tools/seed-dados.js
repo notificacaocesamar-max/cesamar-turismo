@@ -148,7 +148,7 @@ const config = {
   whatsappNumero: "5521993939181",
   whatsappMensagem: "Olá! Vi a oferta {codigo} para {destino}, saindo de {origem}, a partir de {preco} ou {parcelas}x de {parcela}. Quero confirmar a disponibilidade e conhecer as condições.",
   whatsappMensagemGeral: "Olá! Vim pelo site da Cesamar e quero falar com um consultor sobre uma viagem.",
-  chamadaPadrao: "Vai ficar fora dessa? Acione agora um dos nossos consultores.",
+  chamadaPadrao: "Preço encontrado na última pesquisa do robô. Tarifas podem mudar a qualquer momento.",
   avisoPreco: "Valor por pessoa, sujeito a alteração e disponibilidade no momento da solicitação. Consulte datas, taxas, bagagem, formas de pagamento e demais condições.",
   parcelamento: {
     titulo: "Viajar ficou mais fácil",

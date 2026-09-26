@@ -22,6 +22,28 @@
   function db() { return ST.carregar(); }
   function aeroNome(iata) { var a = db().aeroportos.filter(function (x) { return x.iata === iata; })[0]; return a ? iata + " — " + a.nome + (a.origem ? "" : ", " + a.cidade) : iata; }
   function escalas(n) { return n === 0 ? "Voo direto" : n + (n === 1 ? " escala" : " escalas"); }
+  function dataCurta(s) { var p = String(s || "").split("-"); return p.length === 3 ? p[2] + "/" + p[1] : "Data a confirmar"; }
+  function origemReal(o) {
+    var a = db().aeroportos.filter(function (x) { return x.iata === o.aeroportoOrigem; })[0];
+    return a ? a.cidade + " (" + a.iata + ")" : (o.aeroportoOrigem || o.cidadeOrigem || "Origem a confirmar");
+  }
+  function horarioPesquisa(o) {
+    if (!o.pesquisadoEm) return "Preço pesquisado recentemente. Tarifas podem mudar a qualquer momento.";
+    var dt = new Date(o.pesquisadoEm), data = new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit" }).format(dt);
+    var hora = new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", hour: "2-digit", minute: "2-digit", hour12: false }).format(dt).replace(":00", "h").replace(":", "h");
+    var hoje = new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit" }).format(new Date());
+    return "Preço encontrado " + (data === hoje ? "hoje" : "em " + data) + " às " + hora + ". Tarifas podem mudar a qualquer momento.";
+  }
+  function fatosCard(o) {
+    var maxEscalas = Math.max(Number(o.escalasIda || 0), Number(o.escalasVolta || 0));
+    var taxas = o.taxasInclusas === true ? "Taxas incluídas" : o.taxasInclusas === false ? "Taxas não incluídas" : "Taxas a confirmar";
+    return '<ul class="ad-facts" aria-label="Informações da passagem">' +
+      '<li>' + icon("calendar") + '<span>' + dataCurta(o.dataIda) + "–" + dataCurta(o.dataVolta) + "</span></li>" +
+      '<li>' + icon("pin") + '<span>' + esc(origemReal(o)) + "</span></li>" +
+      '<li>' + icon("route") + '<span>' + escalas(maxEscalas) + "</span></li>" +
+      '<li>' + icon("bag") + '<span>' + (o.bagagem ? "Mala despachada incluída" : "Somente bagagem de mão") + "</span></li>" +
+      '<li>' + icon("check") + '<span>' + taxas + "</span></li></ul>";
+  }
   function aviso() { return esc(db().config.avisoPreco); }
   function tipoTag(o) { var t = TIPO[o.tipoPreco] || TIPO.demonstrativo; return '<span class="tag tp ' + t[1] + '">' + t[0] + "</span>"; }
   function urlOferta(o) { return ROOT + "pages/oferta.html?codigo=" + encodeURIComponent(o.codigo); }
@@ -61,9 +83,10 @@
       '<div class="ad-body"><span class="ad-kicker">Passagem de ida e volta · ' + esc(d.cidade) + "</span>" +
       '<h3><a href="' + urlOferta(o) + '" data-conhecer>' + esc(o.titulo) + "</a></h3>" +
       '<p class="ad-sub">' + esc(o.subtitulo) + "</p>" +
+      fatosCard(o) +
       precoHTML(o) +
       '<p class="ad-note">' + aviso() + "</p>" +
-      '<p class="ad-cta-text">' + esc(o.chamada) + "</p>" +
+      '<p class="ad-fresh">' + icon("clock") + '<span>' + esc(horarioPesquisa(o)) + "</span></p>" +
       '<div class="ad-actions"><a class="btn btn--ink" href="' + urlOferta(o) + '" data-conhecer>Conhecer esta oportunidade</a>' +
       '<a class="btn btn--wa" href="' + ST.linkWhatsOferta(o) + '" target="_blank" rel="noopener" data-wa-oferta="' + esc(o.codigo) + '">' + icon("whatsapp") + "Falar com um consultor</a></div>" +
       "</div></article>";

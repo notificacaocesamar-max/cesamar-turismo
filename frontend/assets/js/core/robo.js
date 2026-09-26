@@ -37,7 +37,7 @@
     return {
       titulo: (destino.nomeExibicao || destino.nome) + " em " + MESES[m - 1] + " de " + a,
       subtitulo: "Ida e volta saindo " + (cidade === "RIO" ? "do " : "de ") + NOME_CIDADE[cidade],
-      chamada: (config && config.chamadaPadrao) || "Vai ficar fora dessa? Acione agora um dos nossos consultores."
+      chamada: (config && config.chamadaPadrao) || "Preço encontrado na última pesquisa do robô. Tarifas podem mudar a qualquer momento."
     };
   }
 
