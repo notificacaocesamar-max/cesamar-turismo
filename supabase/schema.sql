@@ -199,6 +199,21 @@ create table if not exists flight_offers (
 );
 create index if not exists flight_offers_status on flight_offers(status);
 
+create table if not exists radar_leads (
+  id                text primary key,
+  fonte             text not null,
+  url               text not null,
+  titulo            text not null,
+  preco_encontrado  numeric(12,2),
+  preco_texto       text,
+  capturado_em      timestamptz not null,
+  status            text not null check (status in ('aguardando_confirmacao','confirmado','descartado','erro')),
+  uso               text not null default 'radar',
+  observacao        text,
+  atualizado_em     timestamptz not null default now()
+);
+create unique index if not exists radar_leads_url on radar_leads(url);
+
 create table if not exists flight_offer_prices (           -- histórico de preços
   id              bigserial primary key,
   oferta_id       text not null references flight_offers(id) on delete cascade,

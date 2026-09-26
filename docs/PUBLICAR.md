@@ -64,7 +64,7 @@ O arquivo `.github/workflows/robo-diario.yml` executa o mesmo robô todos os dia
 - `SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
 
-Enquanto algum segredo estiver ausente, a rotina encerra sem consultar tarifas nem gerar dados falsos. Também é possível testar manualmente em **Actions → Monitorar passagens → Run workflow**.
+Com as duas credenciais do Supabase, o radar público já pode funcionar. A consulta de tarifas por API só é executada quando também existir uma credencial válida do provedor. Nenhuma etapa gera preços falsos. Também é possível testar manualmente em **Actions → Monitorar passagens → Run workflow**.
 
 Essa alternativa é adequada para validar o produto com baixo custo. O Cloud Run continua sendo a opção indicada quando o volume e o controle operacional aumentarem.
 

@@ -38,17 +38,28 @@ jobs:
         id: config
         shell: bash
         run: |
-          if [[ -n "$DUFFEL_ACCESS_TOKEN" && -n "$SUPABASE_URL" && -n "$SUPABASE_SERVICE_ROLE_KEY" ]]; then
-            echo "pronto=true" >> "$GITHUB_OUTPUT"
+          if [[ -n "$SUPABASE_URL" && -n "$SUPABASE_SERVICE_ROLE_KEY" ]]; then
+            echo "banco_pronto=true" >> "$GITHUB_OUTPUT"
           else
-            echo "pronto=false" >> "$GITHUB_OUTPUT"
-            echo "Robô aguardando os segredos DUFFEL_ACCESS_TOKEN, SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY."
+            echo "banco_pronto=false" >> "$GITHUB_OUTPUT"
+            echo "Radar aguardando SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY."
+          fi
+          if [[ -n "$DUFFEL_ACCESS_TOKEN" && -n "$SUPABASE_URL" && -n "$SUPABASE_SERVICE_ROLE_KEY" ]]; then
+            echo "tarifas_pronto=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "tarifas_pronto=false" >> "$GITHUB_OUTPUT"
+            echo "Consulta de tarifas via API aguardando credenciais de um provedor compatível."
           fi
 
       - name: Testar o núcleo
-        if: steps.config.outputs.pronto == 'true'
         run: npm test
 
       - name: Consultar tarifas e salvar ofertas pendentes
-        if: steps.config.outputs.pronto == 'true'
+        if: steps.config.outputs.tarifas_pronto == 'true'
         run: npm run robo
+
+      - name: Executar radar de promoções públicas
+        if: steps.config.outputs.banco_pronto == 'true'
+        env:
+          RADAR_PI_LIMITE: "15"
+        run: npm run radar

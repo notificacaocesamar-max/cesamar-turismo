@@ -8,6 +8,7 @@
     "fotos": "node tools/baixar-biblioteca-fotos.js",
     "test": "node --test",
     "robo": "node robo/index.js",
+    "radar": "node radar/index.js",
     "seed": "node tools/gerar-seed.js && node tools/gerar-seed-supabase.js"
   }
 }
