@@ -9,7 +9,8 @@
   var C = window.Cesamar, ST = C.store, P = C.precos, icon = C.icon, ROOT = C.ROOT;
   var PAGE = document.body.getAttribute("data-page");
   var MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
-  var TIPO = { ao_vivo: ["Preço ao vivo", "tp-live"], indicativo: ["Preço indicativo", "tp-ind"], manual: ["Oferta preparada manualmente", "tp-man"], demonstrativo: ["Conteúdo demonstrativo", "tp-demo"], radar: ["Oferta encontrada pelo robô", "tp-live"] };
+  var TIPO = { ao_vivo: ["Oportunidade especial", "tp-live"], indicativo: ["Inspire-se", "tp-ind"], manual: ["Seleção Cesamar", "tp-man"], demonstrativo: ["Viaje com a Cesamar", "tp-demo"], radar: ["Oportunidade especial", "tp-live"] };
+  var CHAMADAS = { portugal:"Portugal dos sonhos", porto:"Portugal dos sonhos", orlando:"Disney dos sonhos", argentina:"Argentina dos sonhos", franca:"Sonho francês", italia:"Itália inesquecível", espanha:"Espanha dos sonhos", chile:"Encantos do Chile", peru:"Peru inesquecível", japao:"Japão dos sonhos", mexico:"Caribe dos sonhos", "africa-do-sul":"África surpreendente", dubai:"Dubai dos sonhos", grecia:"Grécia dos sonhos", turquia:"Turquia fascinante", suica:"Suíça inesquecível", alemanha:"Descubra a Alemanha", holanda:"Holanda dos sonhos", "reino-unido":"Londres inesquecível", canada:"Canadá dos sonhos" };
   var CLASSE = { economica: "Econômica", premium: "Premium economy", executiva: "Executiva" };
 
   function $(s, el) { return (el || document).querySelector(s); }
@@ -46,6 +47,8 @@
   }
   function aviso() { return esc(db().config.avisoPreco); }
   function tipoTag(o) { var t = TIPO[o.tipoPreco] || TIPO.demonstrativo; return '<span class="tag tp ' + t[1] + '">' + t[0] + "</span>"; }
+  function chamadaComercial(id) { return CHAMADAS[id] || "Seu próximo sonho"; }
+  function tagComercial(id) { return '<span class="tag tp tp-live">' + esc(chamadaComercial(id)) + '</span>'; }
   function urlOferta(o) { return ROOT + "pages/oferta.html?codigo=" + encodeURIComponent(o.codigo); }
   function imagensOferta(destinoId, oferta) {
     var todas = ST.imagens(destinoId).filter(function (i) {
@@ -82,7 +85,7 @@
     var camp = opts.campanha ? db().campanhas.filter(function (c) { return c.id === opts.campanha; })[0] : null;
     return '<article class="ad reveal" data-codigo="' + esc(o.codigo) + '">' +
       '<a class="ad-media" href="' + urlOferta(o) + '" data-conhecer tabindex="-1" aria-hidden="true"><img src="' + im.src + '" alt="" loading="lazy">' +
-      '<div class="ad-tags">' + tipoTag(o) + (opts.selo ? '<span class="tag tag--sun">' + esc(opts.selo) + "</span>" : "") + (camp ? '<span class="tag tag--glass">' + esc(camp.nome) + "</span>" : "") + "</div>" +
+      '<div class="ad-tags">' + tagComercial(o.destinoId) + (opts.selo ? '<span class="tag tag--sun">' + esc(opts.selo) + "</span>" : "") + (camp ? '<span class="tag tag--glass">' + esc(camp.nome) + "</span>" : "") + "</div>" +
       '<span class="ad-code">' + esc(o.codigo) + "</span></a>" +
       '<div class="ad-body"><span class="ad-kicker">Passagem de ida e volta · ' + esc(d.cidade) + "</span>" +
       '<h3><a href="' + urlOferta(o) + '" data-conhecer>' + esc(o.titulo) + "</a></h3>" +
@@ -100,13 +103,13 @@
     var d = ST.destino(o.destinoId) || {}, im = img(o.destinoId, o);
     var origem = o.cidadeOrigem === "RIO" ? "Rio de Janeiro" : "São Paulo";
     return '<article class="ad reveal" data-codigo="' + esc(o.codigo) + '">' +
-      '<a class="ad-media" href="' + esc(o.fonteUrl) + '" target="_blank" rel="noopener nofollow"><img src="' + im.src + '" alt="" loading="lazy"><div class="ad-tags">' + tipoTag({ tipoPreco: "radar" }) + '<span class="tag tag--sun">Atualização automática</span></div><span class="ad-code">' + esc(o.codigo) + '</span></a>' +
-      '<div class="ad-body"><span class="ad-kicker">Passagem de ida e volta · ' + esc(o.destinoNome) + '</span><h3>' + esc(o.destinoNome) + ' saindo de ' + esc(origem) + '</h3>' +
-      '<p class="ad-sub">Oferta encontrada pelo robô e publicada automaticamente.</p>' +
+      '<a class="ad-media" href="#" data-conhecer><img src="' + im.src + '" alt="" loading="lazy"><div class="ad-tags">' + tagComercial(o.destinoId) + '</div><span class="ad-code">' + esc(o.codigo) + '</span></a>' +
+      '<div class="ad-body"><span class="ad-kicker">Passagem de ida e volta · ' + esc(o.destinoNome) + '</span><h3>' + esc(chamadaComercial(o.destinoId)) + '</h3>' +
+      '<p class="ad-sub">Saindo de ' + esc(origem) + ' para ' + esc(o.destinoNome) + '.</p>' +
       '<ul class="ad-facts" aria-label="Informações disponíveis"><li>' + icon("calendar") + '<span>Datas disponíveis na fonte</span></li><li>' + icon("pin") + '<span>Saindo de ' + esc(origem) + '</span></li><li>' + icon("route") + '<span>Escalas a confirmar</span></li><li>' + icon("bag") + '<span>Bagagem a confirmar</span></li><li>' + icon("check") + '<span>' + (o.taxasInclusas ? "Taxas incluídas" : "Taxas a confirmar") + '</span></li></ul>' +
       precoHTML(o) + '<p class="ad-note">Valor por pessoa, sujeito a alteração e disponibilidade na fonte. Consulte datas, bagagem e condições antes da compra.</p>' +
       '<p class="ad-fresh">' + icon("clock") + '<span>' + esc(horarioPesquisa(o)) + ' Oferta válida no portal por até 3 dias.</span></p>' +
-      '<div class="ad-actions"><a class="btn btn--ink" href="' + esc(o.fonteUrl) + '" target="_blank" rel="noopener nofollow">Ver oferta original</a></div></div></article>';
+      '<div class="ad-actions"><a class="btn btn--ink" href="#" data-conhecer>Conhecer esta oportunidade</a></div></div></article>';
   }
 
   /* ------------------------------------------------------------ métricas (cliques) */
