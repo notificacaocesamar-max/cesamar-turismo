@@ -19,7 +19,6 @@ const catalogo = {
   orlando: { ponto: "Lake Eola e skyline de Orlando", ids: [11988945, 20486251, 11669048, 15526516, 14474187] },
   canada: { ponto: "CN Tower e skyline de Toronto", ids: [25696388, 19878015, 29422607, 27375689, 26855042] },
   mexico: { ponto: "Praias de Cancún", ids: [8437275, 1802255, 5960710, 3651084, 29152364] },
-  argentina: { ponto: "Obelisco e arquitetura de Buenos Aires", ids: [38148844, 13265635, 33112756, 38148849, 1392732] },
   chile: { ponto: "Santiago e Cordilheira dos Andes", ids: [37309391, 33606787, 26840727, 30342880, 36143071] },
   peru: { ponto: "Machu Picchu, Peru", ids: [37885473, 16973650, 15449571, 33799523, 7343987] },
   japao: { ponto: "Monte Fuji e templos japoneses", ids: [31385052, 1494077, 4336279, 33341991, 28163625] },
