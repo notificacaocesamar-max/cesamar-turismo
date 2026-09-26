@@ -82,14 +82,14 @@
   function cardOferta(o, opts) {
     opts = opts || {};
     var d = ST.destino(o.destinoId) || {}, im = img(o.destinoId, o);
+    var origem = o.cidadeOrigem === "RIO" ? "Rio de Janeiro" : "São Paulo";
     var camp = opts.campanha ? db().campanhas.filter(function (c) { return c.id === opts.campanha; })[0] : null;
     return '<article class="ad reveal" data-codigo="' + esc(o.codigo) + '">' +
       '<a class="ad-media" href="' + urlOferta(o) + '" data-conhecer tabindex="-1" aria-hidden="true"><img src="' + im.src + '" alt="" loading="lazy">' +
       '<div class="ad-tags">' + tagComercial(o.destinoId) + (opts.selo ? '<span class="tag tag--sun">' + esc(opts.selo) + "</span>" : "") + (camp ? '<span class="tag tag--glass">' + esc(camp.nome) + "</span>" : "") + "</div>" +
       '<span class="ad-code">' + esc(o.codigo) + "</span></a>" +
       '<div class="ad-body"><span class="ad-kicker">Passagem de ida e volta · ' + esc(d.cidade) + "</span>" +
-      '<h3><a href="' + urlOferta(o) + '" data-conhecer>' + esc(chamadaComercial(o.destinoId)) + "</a></h3>" +
-      '<p class="ad-sub">' + esc(o.subtitulo) + "</p>" +
+      '<h3><a href="' + urlOferta(o) + '" data-conhecer>' + esc(d.cidade) + " saindo de " + esc(origem) + "</a></h3>" +
       fatosCard(o) +
       precoHTML(o) +
       '<p class="ad-note">' + aviso() + "</p>" +
@@ -104,8 +104,7 @@
     var origem = o.cidadeOrigem === "RIO" ? "Rio de Janeiro" : "São Paulo";
     return '<article class="ad reveal" data-codigo="' + esc(o.codigo) + '">' +
       '<a class="ad-media" href="#" data-conhecer><img src="' + im.src + '" alt="" loading="lazy"><div class="ad-tags">' + tagComercial(o.destinoId) + '</div><span class="ad-code">' + esc(o.codigo) + '</span></a>' +
-      '<div class="ad-body"><span class="ad-kicker">Passagem de ida e volta · ' + esc(o.destinoNome) + '</span><h3>' + esc(chamadaComercial(o.destinoId)) + '</h3>' +
-      '<p class="ad-sub">Saindo de ' + esc(origem) + ' para ' + esc(o.destinoNome) + '.</p>' +
+      '<div class="ad-body"><span class="ad-kicker">Passagem de ida e volta · ' + esc(o.destinoNome) + '</span><h3>' + esc(o.destinoNome) + ' saindo de ' + esc(origem) + '</h3>' +
       '<ul class="ad-facts" aria-label="Informações disponíveis"><li>' + icon("calendar") + '<span>Datas disponíveis na fonte</span></li><li>' + icon("pin") + '<span>Saindo de ' + esc(origem) + '</span></li><li>' + icon("route") + '<span>Escalas a confirmar</span></li><li>' + icon("bag") + '<span>Bagagem a confirmar</span></li><li>' + icon("check") + '<span>' + (o.taxasInclusas ? "Taxas incluídas" : "Taxas a confirmar") + '</span></li></ul>' +
       precoHTML(o) + '<p class="ad-note">Valor por pessoa, sujeito a alteração e disponibilidade na fonte. Consulte datas, bagagem e condições antes da compra.</p>' +
       '<p class="ad-fresh">' + icon("clock") + '<span>' + esc(horarioPesquisa(o)) + ' Oferta válida no portal por até 3 dias.</span></p>' +
