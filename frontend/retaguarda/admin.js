@@ -39,13 +39,7 @@
     usuario = nome; try { sessionStorage.setItem(SS, nome); } catch (e) { }
     $("#login").hidden = true; $("#app").hidden = false; $("#user-nome").textContent = nome; ir(view);
   }
-  $("#form-login").addEventListener("submit", function (e) {
-    e.preventDefault();
-    var senha = this.senha.value, nome = this.usuario.value.trim() || "Equipe";
-    if (senha !== String(db().config.adminSenhaDemo || "")) { $("#login-msg").textContent = "Senha incorreta."; return; }
-    entrar(nome);
-  });
-  $("#btn-sair").addEventListener("click", function () { try { sessionStorage.removeItem(SS); } catch (e) { } location.reload(); });
+  window.CesamarAdminEntrar = entrar;
 
   /* ------------------------------------------------------------ navegação */
   $("#adm-nav").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) ir(b.dataset.view); });
@@ -612,5 +606,5 @@
   }
 
   /* ------------------------------------------------------------ sessão */
-  try { var s = sessionStorage.getItem(SS); if (s) entrar(s); } catch (e) { }
+  // A sessão online é validada por equipe-auth.js (Supabase Auth + TOTP).
 })();

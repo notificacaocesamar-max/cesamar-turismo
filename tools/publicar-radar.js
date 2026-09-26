@@ -2,6 +2,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const Fontes = require("../radar/fontes.js");
+const FontesCruzeiros = require("../radar/fontes-cruzeiros.js");
 const criarRepositorioSupabase = require("../radar/repositorio-supabase.js");
 const Precos = require("../frontend/assets/js/core/precos.js");
 
@@ -30,6 +31,7 @@ async function main(opcoes) {
   const agora = opcoes.agora || new Date(), iso = agora.toISOString();
   const anterior = opcoes.anterior || lerAnterior();
   const coletados = await Fontes.passagensImperdiveis({ fetch: opcoes.fetch, limite: process.env.RADAR_PI_LIMITE || 15, agora });
+  const cruzeiros = await FontesCruzeiros.consultar({ fetch: opcoes.fetch, agora });
   const temSupabase = process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY;
   const repo = opcoes.repo || (temSupabase ? criarRepositorioSupabase(process.env, opcoes.fetch) : null);
   if (repo) await repo.salvar(coletados);
@@ -44,9 +46,9 @@ async function main(opcoes) {
   const atuais = {};
   (anterior.ofertas || []).filter((x) => diasEntre(x.pesquisadoEm, iso) < 3 && destinoId(x.destinoNome) === x.destinoId).forEach((x) => { atuais[x.chave] = x; });
   Object.keys(melhores).forEach((k) => { if (!atuais[k] || melhores[k].custoOriginal < atuais[k].custoOriginal) atuais[k] = melhores[k]; });
-  const saida = { atualizadoEm: iso, validadeDias: 3, ofertas: Object.values(atuais).sort((a, b) => a.preco.precoParcelado - b.preco.precoParcelado) };
+  const saida = { atualizadoEm: iso, validadeDias: 3, ofertas: Object.values(atuais).sort((a, b) => a.preco.precoParcelado - b.preco.precoParcelado), cruzeiros };
   fs.writeFileSync(ARQUIVO, "window.CESAMAR_RADAR = " + JSON.stringify(saida) + ";\n", "utf8");
-  console.log("[radar-publicador] " + coletados.length + " fontes registradas; " + saida.ofertas.length + " ofertas automáticas válidas por até 3 dias.");
+  console.log("[radar-publicador] " + coletados.length + " fontes aéreas; " + cruzeiros.length + " fontes de cruzeiro; " + saida.ofertas.length + " ofertas válidas por até 3 dias.");
   return saida;
 }
 

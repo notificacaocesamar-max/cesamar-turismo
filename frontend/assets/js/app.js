@@ -266,9 +266,11 @@
         _price: preco, _badge: '<span class="tag tag--glass">' + (n ? n + (n > 1 ? " ofertas" : " oferta") : "Sob consulta") + "</span>" };
     });
     var brasil = DATA.destinos.filter(function (d) { return d.tipo === "nacional"; }).map(function (d) {
-      var ofertas = ((window.CESAMAR_RADAR || {}).ofertas || []).filter(function (o) { return o.destinoId === d.slug; }).length;
+      var listaNacional = (((window.CESAMAR_RADAR || {}).ofertas || []).concat(window.CESAMAR_NACIONAIS || [])).filter(function (o) { return o.destinoId === d.slug; }).sort(function(a,b){ return a.preco.precoParcelado-b.preco.precoParcelado; });
+      var ofertas = listaNacional.length, melhor = listaNacional[0];
+      var preco = melhor ? '<div class="poster-price"><small>Passagem de ida e volta</small><b>A partir de ' + brl(melhor.preco.precoParcelado) + '</b><em>ou ' + melhor.preco.parcelas + 'x de ' + brl(melhor.preco.valorParcela) + '</em></div>' : '<div class="poster-price"><b>Valor sob consulta</b></div>';
       return Object.assign({}, d, { pais: "Brasil", imagem: "assets/img/biblioteca/" + d.slug + "/01.jpg", _href: ROOT + "pages/ofertas.html?destino=" + d.slug,
-        _badge: '<span class="tag tag--glass">' + (ofertas ? ofertas + (ofertas > 1 ? " ofertas" : " oferta") : "Sob consulta") + '</span>' });
+        _price: preco, _badge: '<span class="tag tag--glass">' + (ofertas ? ofertas + (ofertas > 1 ? " ofertas" : " oferta") : "Sob consulta") + '</span>' });
     });
     var todos = nacional ? brasil : mundo;
     var regioes = [], locais = []; todos.forEach(function (d) {
@@ -455,9 +457,12 @@
   function initCruzeiros() {
     var l = $("#lista-cruzeiros");
     l.innerHTML = DATA.cruzeiros.map(function (c) {
-      return '<article class="cruise reveal"><div class="media"><img src="' + ROOT + "assets/img/destinos/" + c.arte + '.svg" alt="" loading="lazy"></div><div class="body">' +
+      var imagem = c.imagemUrl || (ROOT + "assets/img/destinos/" + c.arte + ".svg");
+      var pesquisa = c.pesquisadoEm ? new Date(c.pesquisadoEm).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "";
+      return '<article class="cruise reveal"><div class="media"><img src="' + esc(imagem) + '" alt="' + esc(c.imagemAlt || ("Navio de cruzeiro em " + c.nome)) + '" loading="lazy"></div><div class="body">' +
         '<span class="eyebrow">' + c.noites + " noites · " + esc(c.temporada) + "</span><h3 style=\"font-size:clamp(1.6rem,2.4vw,2.2rem)\">" + esc(c.nome) + "</h3><p class=\"muted\">" + esc(c.resumo) + "</p>" +
         '<div class="route" aria-label="Portos">' + c.portos.map(function (p) { return "<span>" + esc(p) + "</span>"; }).join("<i></i>") + "</div>" +
+        (pesquisa ? '<p class="offer-found"><strong>Oferta monitorada em ' + pesquisa + '.</strong> Valor final Cesamar com acréscimo de 10%; sujeito à disponibilidade na fonte.</p>' : '') +
         '<div class="foot" style="display:flex;justify-content:space-between;align-items:end;gap:14px;margin-top:auto;flex-wrap:wrap">' + precoHTML({ precoAPartir: c.precoAPartir, parcelas: 10 }) +
         '<a class="btn btn--ink" href="#cotar" data-cruzeiro="Cruzeiro ' + esc(c.nome) + '">Cotar este cruzeiro</a></div></div></article>';
     }).join("");

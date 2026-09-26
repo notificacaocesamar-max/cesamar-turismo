@@ -15,13 +15,14 @@
 <section class="adm-login" id="login">
   <form class="adm-login-card" id="form-login">
     <img src="../assets/img/logo/logo-cesamar.svg" alt="Cesamar Turismo" class="adm-login-logo">
-    <h1>Painel de ofertas</h1>
-    <p class="muted">Robô de passagens, aprovação de anúncios, preços e métricas.</p>
-    <div class="field"><label for="l-user">Seu nome</label><input id="l-user" name="usuario" autocomplete="username" placeholder="Ex.: Alexandre" required></div>
+    <h1>Área da equipe</h1>
+    <p class="muted">Acesso protegido por senha e código do aplicativo autenticador.</p>
+    <div class="field"><label for="l-user">E-mail</label><input id="l-user" name="usuario" type="email" autocomplete="username" placeholder="nome@empresa.com.br" required></div>
     <div class="field"><label for="l-senha">Senha</label><input id="l-senha" name="senha" type="password" autocomplete="current-password" required></div>
     <button class="btn btn--block" type="submit">Entrar</button>
     <p class="adm-login-msg" id="login-msg" role="status"></p>
-    <p class="adm-demo-note">Versão offline de demonstração: senha inicial <b>cesamar2026</b> (altere em Configurações). Os dados ficam só neste navegador. Na versão online o login é feito pelo Supabase Auth.</p>
+    <div id="mfa-etapa" hidden><div id="mfa-qr"></div><p class="muted" id="mfa-ajuda"></p><div class="field"><label for="l-totp">Código de 6 dígitos</label><input id="l-totp" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div><button class="btn btn--block" id="btn-totp" type="button">Validar código</button></div>
+    <p class="adm-demo-note">No primeiro acesso, escaneie o QR Code com Google Authenticator, Microsoft Authenticator ou aplicativo equivalente.</p>
     <a class="link-arrow" href="../index.html" style="font-size:.88rem">← Voltar ao site</a>
   </form>
 </section>
@@ -32,6 +33,8 @@
     <a href="../index.html" class="adm-brand" target="_blank" rel="noopener"><img src="../assets/img/logo/logo-cesamar-white.svg" alt="Cesamar — abrir o site"></a>
     <nav id="adm-nav">
       <button data-view="painel" class="on">Painel</button>
+      <button data-equipe-view="perfil">Meu perfil e plantão</button>
+      <button data-equipe-view="controle" id="nav-controle">Controle gerencial</button>
       <button data-view="ofertas">Ofertas <span class="adm-pill" id="pill-pend" hidden>0</span></button>
       <button data-view="robo">Robô e registros</button>
       <button data-view="regras">Monitoramento</button>
@@ -44,7 +47,7 @@
       <button data-view="config">Configurações e dados</button>
     </nav>
     <div class="adm-side-foot">
-      <div class="adm-farol warn"><i></i><span>Offline · dados neste navegador</span></div>
+      <div class="adm-farol"><i></i><span>Conectado com TOTP</span></div>
       <div class="adm-user"><span id="user-nome"></span><button id="btn-sair" class="adm-link">Sair</button></div>
     </div>
   </aside>
@@ -61,11 +64,13 @@
 <div class="toast" role="status" aria-live="polite"></div>
 
 <script src="../assets/js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../assets/js/seed.js"></script>
 <script src="../assets/js/core/precos.js"></script>
 <script src="../assets/js/core/provedores.js"></script>
 <script src="../assets/js/core/robo.js"></script>
 <script src="../assets/js/core/store.js"></script>
 <script src="admin.js"></script>
+<script src="equipe-auth.js"></script>
 </body>
 </html>

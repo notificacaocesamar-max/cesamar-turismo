@@ -673,68 +673,86 @@ window.CESAMAR_DATA = {
  "cruzeiros": [
   {
    "slug": "mediterraneo",
-   "nome": "Mediterrâneo",
+   "nome": "MSC Grand Voyage · Europa ao Brasil",
    "arte": "cruzeiro-mediterraneo",
-   "noites": 7,
-   "precoAPartir": 7900,
-   "temporada": "Abr a out",
+   "noites": 18,
+   "precoAPartir": 7246,
+   "custoFonte": 6587,
+   "temporada": "29 out 2026",
+   "fonte": "MSC Cruzeiros",
+   "fonteUrl": "https://www.msccruzeiros.com.br/nossos-cruzeiros/navios/msc-divina/itineraries",
+   "pesquisadoEm": "2026-09-26T13:00:00-03:00",
+   "imagemUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Cruise-ship%20dock%2C%20Port%20of%20Barcelona.jpg?width=1600",
+   "imagemAlt": "Navios de cruzeiro no porto de Barcelona",
    "portos": [
-    "Barcelona",
-    "Marselha",
-    "Gênova",
-    "Roma (Civitavecchia)",
     "Nápoles",
-    "Palma de Mallorca"
+    "Roma (Civitavecchia)",
+    "Gênova",
+    "Tarragona",
+    "Salvador",
+    "Santos"
    ],
-   "resumo": "Seis países em uma semana: Espanha, França e Itália com a cabine como seu hotel."
+   "resumo": "Uma travessia da Europa ao Brasil a bordo do MSC Divina, com taxas informadas pela fonte incluídas."
   },
   {
    "slug": "caribe",
-   "nome": "Caribe",
+   "nome": "MSC Minicruzeiro pelo Brasil",
    "arte": "cruzeiro-caribe",
-   "noites": 7,
-   "precoAPartir": 6400,
-   "temporada": "Ano todo",
+   "noites": 3,
+   "precoAPartir": 2204,
+   "custoFonte": 2004,
+   "temporada": "A partir de 29 jan 2027",
+   "fonte": "MSC Cruzeiros",
+   "fonteUrl": "https://www.msccruzeiros.com.br/",
+   "pesquisadoEm": "2026-09-26T13:00:00-03:00",
+   "imagemUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Cruzeiro%20Costa%20Serena%20em%20Santos%2C%20SP%20%286746360803%29.jpg?width=1600",
+   "imagemAlt": "Navio de cruzeiro saindo do porto de Santos",
    "portos": [
-    "Miami",
-    "Nassau",
-    "Cozumel",
-    "Roatán",
-    "Costa Maya"
+    "Santos",
+    "Costa brasileira"
    ],
-   "resumo": "Ilhas de areia branca, mergulho em recifes e dias de sol a bordo."
+   "resumo": "Uma viagem curta para experimentar a vida a bordo, com embarque em Santos no MSC Divina."
   },
   {
    "slug": "costa-brasileira",
-   "nome": "Costa Brasileira",
+   "nome": "Costa · América do Sul saindo de Santos",
    "arte": "cruzeiro-brasil",
-   "noites": 5,
-   "precoAPartir": 3200,
-   "temporada": "Nov a abr",
+   "noites": 3,
+   "precoAPartir": 2610,
+   "custoFonte": 2373,
+   "temporada": "03 a 06 dez 2026",
+   "fonte": "Costa Cruzeiros",
+   "fonteUrl": "https://www.costacruzeiros.com/cruzeiros-por-temporada/cruzeiros-verao.html",
+   "pesquisadoEm": "2026-09-26T13:00:00-03:00",
+   "imagemUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Cruzeiro%20Costa%20Serena%20em%20Santos%2C%20SP%20%286746360803%29.jpg?width=1600",
+   "imagemAlt": "Costa Serena navegando na saída do porto de Santos",
    "portos": [
-    "Rio de Janeiro",
-    "Búzios",
-    "Ilhabela",
-    "Balneário Camboriú",
-    "Santos"
+    "Santos",
+    "América do Sul"
    ],
-   "resumo": "Sem passaporte e com saída do Rio: a temporada de verão no litoral brasileiro."
+   "resumo": "Minicruzeiro de verão com saída de Santos; tarifas marítimas, de serviço e portuárias incluídas pela fonte."
   },
   {
    "slug": "fiordes-noruega",
-   "nome": "Fiordes da Noruega",
+   "nome": "Costa Serena · Rio, Argentina e Uruguai",
    "arte": "cruzeiro-fiordes",
    "noites": 7,
-   "precoAPartir": 11200,
-   "temporada": "Mai a set",
+   "precoAPartir": 5433,
+   "custoFonte": 4939,
+   "temporada": "14 a 21 fev 2027",
+   "fonte": "Costa Cruzeiros",
+   "fonteUrl": "https://www.costacruzeiros.com/temporada-26-27.html",
+   "pesquisadoEm": "2026-09-26T13:00:00-03:00",
+   "imagemUrl": "https://commons.wikimedia.org/wiki/Special:Redirect/file/Cruise%20ship%20in%20Rio%20de%20Janeiro.jpg?width=1600",
+   "imagemAlt": "Navio de cruzeiro na Baía de Guanabara, no Rio de Janeiro",
    "portos": [
-    "Copenhague",
-    "Stavanger",
-    "Geiranger",
-    "Hellesylt",
-    "Bergen"
+    "Rio de Janeiro",
+    "Buenos Aires",
+    "Montevidéu",
+    "Balneário Camboriú",
+    "Ilhabela"
    ],
-   "resumo": "Paredões verdes, cachoeiras e vilarejos à beira dos fiordes sob o sol da meia-noite."
+   "resumo": "Roteiro pelo Prata com embarque no Rio de Janeiro; tarifas marítimas, de serviço e portuárias incluídas pela fonte."
   }
  ],
  "servicos": [
