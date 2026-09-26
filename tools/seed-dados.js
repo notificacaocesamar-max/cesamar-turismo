@@ -28,7 +28,7 @@ const D = [
   ["orlando", "ORL", "Estados Unidos", "Orlando", "MCO", "Orlando International", "América do Norte", "orlando", ["15-anos", "familia"]],
   ["canada", "CAN", "Canadá", "Toronto", "YYZ", "Pearson", "América do Norte", "canada", ["familia", "cultura-aventura"]],
   ["mexico", "MEX", "México", "Cancún", "CUN", "Cancún", "América Central", "cancun", ["praias", "romanticos", "familia"]],
-  ["argentina", "ARG", "Argentina", "Buenos Aires", "EZE", "Ezeiza", "América do Sul", "argentina", ["romanticos", "cultura-aventura"]],
+  ["argentina", "ARG", "Argentina", "Bariloche", "BRC", "Teniente Luis Candelaria", "América do Sul", "patagonia", ["romanticos", "familia", "cultura-aventura"]],
   ["chile", "CHI", "Chile", "Santiago", "SCL", "Arturo Merino Benítez", "América do Sul", "chile", ["familia", "cultura-aventura"]],
   ["peru", "PER", "Peru", "Lima", "LIM", "Jorge Chávez", "América do Sul", "peru", ["cultura-aventura"]],
   ["japao", "JAP", "Japão", "Tóquio", "NRT", "Narita", "Ásia", "japao", ["cultura-aventura"]],
@@ -39,7 +39,7 @@ const D = [
 // artigo usado nas frases ("para a Itália", "para o Japão", "para Portugal")
 const ARTIGO = { italia: "a", franca: "a", espanha: "a", "reino-unido": "o", holanda: "a", alemanha: "a", suica: "a", grecia: "a",
   turquia: "a", canada: "o", mexico: "o", argentina: "a", chile: "o", peru: "o", japao: "o", egito: "o", "africa-do-sul": "a" };
-const EXIBICAO = { portugal: "Lisboa", porto: "Porto", orlando: "Orlando", dubai: "Dubai" }; // destinos anunciados pela cidade
+const EXIBICAO = { portugal: "Lisboa", porto: "Porto", orlando: "Orlando", dubai: "Dubai", argentina: "Bariloche" }; // destinos anunciados pela cidade
 const destinos = D.map((x, i) => ({
   id: x[0], slug: x[0], sigla: x[1], nome: x[2], cidade: x[3], aeroporto: x[4], nomeAeroporto: x[5], regiao: x[6],
   arte: x[7], campanhas: x[8], ativo: true, ordem: i, artigo: ARTIGO[x[0]] || "", nomeExibicao: EXIBICAO[x[0]] || x[2],
@@ -83,7 +83,7 @@ const C = {
   orlando: ["Orlando, onde a magia acontece", "Parques temáticos, compras e diversão para todas as idades. Um dos destinos mais mágicos do mundo para comemorar datas especiais em família ou com os amigos.", ["Parques temáticos para todas as idades", "Um dos destinos preferidos para festas de 15 anos", "Outlets e compras", "Clima quente boa parte do ano"]],
   canada: ["Canadá: natureza grandiosa e cidades acolhedoras", "Toronto é moderna, multicultural e fica a poucas horas das Cataratas do Niágara. Uma viagem que agrada de crianças a avós.", ["Cataratas do Niágara por perto", "Cidades seguras e organizadas", "Outono com folhas vermelhas e neve no inverno", "Multiculturalismo e ótima gastronomia"]],
   mexico: ["Cancún: Caribe de águas turquesa", "Mar em tons de azul, resorts pé na areia e cenotes escondidos na mata. Perfeito para casais, famílias e quem só quer descansar.", ["Mar do Caribe de águas claras", "Resorts para todos os estilos", "Cenotes e sítios arqueológicos maias", "Voos com poucas conexões a partir do Brasil"]],
-  argentina: ["Buenos Aires, a um voo de distância", "Tango, cafés históricos, parrillas e vinhos. Uma capital charmosa e muito perto, ideal para uma escapada romântica de poucos dias.", ["Voo curto a partir do Brasil", "Gastronomia e vinhos excelentes", "Arquitetura europeia e vida cultural intensa", "Ótima para feriados prolongados"]],
+  argentina: ["Bariloche: neve, lagos e montanhas", "No inverno, Bariloche combina paisagens cobertas de neve, estações de esqui, chocolates artesanais e o azul intenso dos lagos da Patagônia. Uma viagem para viver o frio de verdade.", ["Neve e esportes de inverno", "Cerro Catedral e paisagens da Cordilheira", "Chocolate artesanal e gastronomia patagônica", "Lagos e mirantes inesquecíveis"]],
   chile: ["Chile: Andes, vinhos e neve", "Santiago fica aos pés da Cordilheira: no inverno há estações de esqui a menos de duas horas, e no ano todo vinícolas encantadoras.", ["Neve no inverno perto da capital", "Rota de vinícolas no Vale do Maipo", "Voo curto e sem fuso horário grande", "Combina cidade e natureza"]],
   peru: ["Peru: história viva nos Andes", "De Lima, a capital gastronômica da América do Sul, até Cusco e Machu Picchu — uma viagem que mistura sabores, cultura e paisagens impressionantes.", ["Gastronomia premiada de Lima", "Cusco e Machu Picchu", "Cultura andina preservada", "Voo curto a partir do Brasil"]],
   japao: ["Japão: tradição e tecnologia em uma só viagem", "Tradição e tecnologia em uma só viagem. Descubra templos, sabores e cidades que parecem ter vindo do futuro — com a primavera das cerejeiras e o outono das folhas vermelhas como épocas mais disputadas.", ["Templos e jardins milenares", "Uma das gastronomias mais respeitadas do mundo", "Trens-bala entre as principais cidades", "Cerejeiras na primavera e cores no outono"]],
@@ -123,7 +123,7 @@ const R = [
   ["alemanha", "2026-11-25", "2026-12-15", 8, 14, 1, false], ["suica", "2027-01-15", "2027-02-28", 8, 14, 1, false],
   ["grecia", "2027-06-01", "2027-07-15", 10, 16, 2, false], ["turquia", "2027-04-01", "2027-05-15", 8, 14, 1, false],
   ["orlando", "2027-01-10", "2027-02-15", 8, 14, 1, true], ["canada", "2027-09-15", "2027-10-31", 8, 14, 1, false],
-  ["mexico", "2027-03-01", "2027-04-15", 6, 10, 1, false], ["argentina", "2027-05-01", "2027-06-30", 4, 7, 0, false],
+  ["mexico", "2027-03-01", "2027-04-15", 6, 10, 1, false], ["argentina", "2027-07-01", "2027-08-20", 5, 8, 1, true],
   ["chile", "2027-07-01", "2027-08-15", 5, 8, 0, true], ["peru", "2027-05-01", "2027-06-30", 7, 12, 1, false],
   ["japao", "2027-03-20", "2027-04-20", 12, 18, 2, true], ["dubai", "2027-11-01", "2027-12-10", 7, 12, 1, false],
   ["egito", "2027-10-15", "2027-11-30", 9, 14, 2, false], ["africa-do-sul", "2027-10-01", "2027-11-15", 9, 14, 2, false],

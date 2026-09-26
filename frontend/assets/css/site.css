@@ -138,6 +138,14 @@ body.has-hero .site-header .brand .bird, body.has-hero .site-header .brand .word
 .nav a:hover { opacity: 1; background: color-mix(in srgb, currentColor 8%, transparent); }
 .nav a[aria-current="page"]::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 2px; height: 2px; border-radius: 2px; background: var(--coral); }
 .header-cta { display: flex; gap: 10px; align-items: center; }
+.lang-switcher { position: relative; flex: 0 0 auto; }
+.lang-switcher summary { list-style: none; display: flex; align-items: center; gap: 7px; border: 1px solid currentColor; border-radius: 999px; background: rgba(255,255,255,.12); padding: 7px 11px; cursor: pointer; font: 600 .72rem/1 var(--f-body); }
+.lang-switcher summary::-webkit-details-marker { display: none; }
+.lang-switcher summary::after { content: "⌄"; font-size: .8rem; }
+.lang-switcher img { width: 22px; height: 15px; object-fit: cover; border-radius: 2px; box-shadow: 0 0 0 1px rgba(0,0,0,.15); }
+.lang-menu { position: absolute; right: 0; top: calc(100% + 10px); min-width: 210px; padding: 7px; border-radius: 14px; background: #fff; color: var(--ink); box-shadow: var(--sh-3); }
+.lang-menu a { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 9px; font-size: .78rem; white-space: nowrap; }
+.lang-menu a:hover, .lang-menu a[aria-current="true"] { background: var(--indigo-soft); }
 .menu-btn { display: none; margin-left: auto; width: 46px; height: 46px; border-radius: 50%; border: 0; background: color-mix(in srgb, currentColor 10%, transparent); color: inherit; align-items: center; justify-content: center; }
 .menu-btn span, .menu-btn span::before, .menu-btn span::after { display: block; width: 20px; height: 2px; background: currentColor; border-radius: 2px; position: relative; transition: transform .3s var(--ease), background .2s; }
 .menu-btn span::before, .menu-btn span::after { content: ""; position: absolute; left: 0; }
@@ -152,6 +160,7 @@ body.menu-open .menu-btn span::after { transform: translateY(-6px) rotate(-45deg
   .header-cta { margin-left: 0; }
 }
 @media (max-width: 560px) { .header-cta { display: none; } .brand svg.word { width: 104px; } .brand svg.mark { width: 54px; } }
+@media (max-width: 560px) { .lang-switcher summary span { display: none; } .lang-switcher summary { padding: 7px 8px; } }
 
 .mobile-nav {
   position: fixed; inset: 0; z-index: 45; background: var(--ink); color: #fff; padding: calc(var(--header-h) + 30px) var(--gutter) 40px;

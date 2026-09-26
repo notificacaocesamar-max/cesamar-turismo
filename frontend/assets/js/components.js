@@ -109,12 +109,22 @@
       (CFG.prototipo ? '<div class="proto-bar"><b>Versão de demonstração</b> · preços simulados; fotos reais identificadas e licenciadas</div>' : "") +
       '<header class="site-header"><div class="wrap">' + brand() +
       '<nav class="nav" aria-label="Principal">' + links + "</nav>" +
+      languageSwitcher() +
       '<div class="header-cta"><a class="fav-link" href="' + ROOT + 'pages/pacotes.html?favoritos=1" aria-label="Meus favoritos">' + icon("heart") + '<span class="fav-count" hidden>0</span></a><a class="btn btn--sm btn--wa" href="' + waLink() + '" target="_blank" rel="noopener" data-wa-geral>' + icon("whatsapp") + 'Falar com um consultor</a></div>' +
       '<button class="menu-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-nav"><span></span></button>' +
       "</div></header>" +
       '<nav class="mobile-nav" id="mobile-nav" aria-label="Menu">' +
       '<a href="' + ROOT + 'index.html">Início</a>' + NAV.map(function (n) { return '<a href="' + ROOT + n[2] + '">' + n[1] + "</a>"; }).join("") +
       '<a class="btn btn--wa" href="' + waLink() + '" target="_blank" rel="noopener">' + icon("whatsapp") + "Falar no WhatsApp</a></nav>";
+  }
+
+  function languageSwitcher() {
+    var atual = window.location.href;
+    var langs = [["pt-BR", "Brasil", "br"], ["en", "English (USA)", "us"], ["es", "Español", "es"], ["fr", "Français", "fr"], ["pt-PT", "Português (Portugal)", "pt"]];
+    function href(codigo) { return codigo === "pt-BR" ? atual : "https://translate.google.com/translate?sl=pt&tl=" + encodeURIComponent(codigo) + "&u=" + encodeURIComponent(atual); }
+    function flag(sigla, alt) { return '<img src="' + ROOT + 'assets/img/flags/' + sigla + '.svg" alt="' + alt + '">'; }
+    return '<details class="lang-switcher"><summary aria-label="Selecionar idioma">' + flag("br", "Brasil") + '<span>PT-BR</span></summary><div class="lang-menu">' +
+      langs.map(function (l) { return '<a href="' + href(l[0]) + '"' + (l[0] === "pt-BR" ? ' aria-current="true"' : ' target="_blank" rel="noopener"') + '>' + flag(l[2], l[1]) + '<span>' + l[1] + '</span></a>'; }).join("") + '</div></details>';
   }
 
   function footer() {
