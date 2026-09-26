@@ -73,7 +73,7 @@
     var nPk = DATA.pacotes.filter(function (p) { return p.destino === d.slug; }).length;
     return '<a class="poster reveal" href="' + href + '"' + (opts.style ? ' style="' + opts.style + '"' : "") + '><img src="' + imgDestino(d.slug, d) + '" alt="" loading="lazy">' +
       '<div class="top"><span class="tag tag--glass">' + esc(d.tipo === "nacional" ? "Brasil" : d.regiao) + "</span>" + (opts.badge != null ? opts.badge : (nPk ? '<span class="tag tag--glass">' + nPk + (nPk > 1 ? " pacotes" : " pacote") + "</span>" : "")) + "</div>" +
-      '<div class="bottom"><h3>' + esc(d.nome) + "</h3><p>" + esc(opts.sub || d.chamada) + "</p></div>" +
+      '<div class="bottom"><h3>' + esc(d.nome) + "</h3><p>" + esc(opts.sub || d.chamada) + "</p>" + (opts.price || "") + "</div>" +
       '<span class="go">' + icon("arrow") + "</span></a>";
   }
 
@@ -257,11 +257,13 @@
     var ST = window.Cesamar.store, nacional = PAGE === "destinos-nacionais", estado = { regiao: "", local: "" };
     var grid = $("#grid-destinos"), categorias = $("#grid-categorias"), chips = $("#filtro-destinos"), busca = $("#busca-destinos");
     var mundo = ST.carregar().destinos.filter(function (d) { return d.ativo; }).map(function (d) {
-      var n = ST.publicadas().filter(function (o) { return o.destinoId === d.id; }).length, ct = ST.conteudo(d.id) || {};
-      var im = ST.imagemPrincipal(d.id);
+      var ofertas = ST.carregar().ofertas.filter(function (o) { return o.destinoId === d.id; }).sort(function (a, b) { return a.preco.precoParcelado - b.preco.precoParcelado; });
+      var n = ofertas.length, ct = ST.conteudo(d.id) || {}, melhor = ofertas[0];
+      var im = ST.imagens(d.id).filter(function (i) { return i.url.indexOf("assets/img/biblioteca/") === 0; })[0];
+      var preco = melhor ? '<div class="poster-price"><small>Passagem de ida e volta</small><b>A partir de ' + brl(melhor.preco.precoParcelado) + '</b><em>ou ' + melhor.preco.parcelas + 'x de ' + brl(melhor.preco.valorParcela) + '</em></div>' : '<div class="poster-price"><b>Valor sob consulta</b></div>';
       return { slug: d.id, nome: d.nomeExibicao || d.nome, local: d.cidade + ", " + d.nome, tipo: "internacional", regiao: d.regiao, chamada: ct.tituloEmocional || "",
         imagem: im ? im.url : d.arte + ".svg", temas: d.campanhas || [], _href: ROOT + "pages/ofertas.html?destino=" + d.id,
-        _badge: '<span class="tag tag--glass">' + (n ? n + (n > 1 ? " ofertas" : " oferta") : "Sob consulta") + "</span>" };
+        _price: preco, _badge: '<span class="tag tag--glass">' + (n ? n + (n > 1 ? " ofertas" : " oferta") : "Sob consulta") + "</span>" };
     });
     var brasil = DATA.destinos.filter(function (d) { return d.tipo === "nacional"; }).map(function (d) {
       var ofertas = ((window.CESAMAR_RADAR || {}).ofertas || []).filter(function (o) { return o.destinoId === d.slug; }).length;
@@ -291,7 +293,7 @@
         return (!estado.regiao || d.regiao === estado.regiao) && (!estado.local || local === estado.local) &&
           (!q || (d.nome + " " + d.local + " " + d.regiao).toLowerCase().indexOf(q) >= 0);
       });
-      grid.innerHTML = l.length ? l.map(function (d) { return posterCard(d, { href: d._href, badge: d._badge }); }).join("") : '<p class="empty">Nenhum destino encontrado. <a class="link-arrow" href="' + window.Cesamar.waLink() + '">Fale com um consultor ' + icon("arrow") + "</a></p>";
+      grid.innerHTML = l.length ? l.map(function (d) { return posterCard(d, { href: d._href, badge: d._badge, price: d._price }); }).join("") : '<p class="empty">Nenhum destino encontrado. <a class="link-arrow" href="' + window.Cesamar.waLink() + '">Fale com um consultor ' + icon("arrow") + "</a></p>";
       $("#count-destinos").textContent = l.length + (l.length === 1 ? " destino" : " destinos");
       revelar(grid);
     }

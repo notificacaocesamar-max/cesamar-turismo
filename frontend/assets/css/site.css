@@ -423,6 +423,10 @@ body.menu-open .site-header .brand .bird, body.menu-open .site-header .brand .wo
 .region-card small { text-transform: uppercase; letter-spacing: .12em; font-size: .65rem; }
 .region-card b { font: 600 1.45rem/1.1 var(--f-display); }
 .region-card em { font-style: normal; font-size: .76rem; opacity: .8; }
+.poster-price { display: grid; gap: 1px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.28); }
+.poster-price small { font-size: .68rem; text-transform: uppercase; letter-spacing: .06em; opacity: .82; }
+.poster-price b { font-size: 1rem; color: #fff; }
+.poster-price em { font-style: normal; font-size: .76rem; opacity: .85; }
 @media (max-width: 1450px) { .nav a { padding-left: 8px; padding-right: 8px; font-size: .76rem; } }
 .result-count { font-size: .88rem; color: var(--muted); }
 .empty { text-align: center; padding: 60px 20px; color: var(--muted); grid-column: 1 / -1; }
