@@ -20,7 +20,7 @@ Robo.executar(db, { provedor, agora }).then((resumo) => {
   db.ofertas.forEach((o) => {
     if (deixarPendentes.indexOf(o.destinoId) < 0) { o.status = "publicado"; o.publicadoEm = agora.toISOString(); o.aprovadoPor = "seed"; }
   });
-  db.versao = 4; db.geradoEm = agora.toISOString();
+  db.versao = 5; db.geradoEm = agora.toISOString();
   const out = "/* Dados de DEMONSTRAÇÃO gerados por tools/gerar-seed.js em " + dia + ".\n   Preços SIMULADOS pelo DemoProvider — não são tarifas reais. */\nwindow.CESAMAR_SEED = " + JSON.stringify(db) + ";\n";
   fs.writeFileSync(path.join(__dirname, "../frontend/assets/js/seed.js"), out, "utf8");
   console.log("seed.js ok:", resumo, "ofertas:", db.ofertas.length, "bytes:", out.length);

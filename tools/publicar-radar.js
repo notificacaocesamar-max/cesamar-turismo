@@ -10,6 +10,7 @@ const ARQUIVO = path.join(__dirname, "..", "frontend", "assets", "js", "radar-pu
 const MAPA = [
   [/\b(lisboa)\b/i, "portugal"], [/^porto$/i, "porto"], [/orlando|tampa/i, "orlando"],
   [/bariloche|buenos aires|cordoba|el calafate|mendoza|ushuaia|rosario|salta|jujuy/i, "argentina"],
+  [/nova york|new york/i, "nova-york"], [/los angeles|calif[oó]rnia|hollywood/i, "california"],
   [/santiago|calama|copiapo/i, "chile"], [/madri|madrid|barcelona/i, "espanha"], [/paris/i, "franca"],
   [/roma|mil[aã]o|veneza/i, "italia"], [/canc[uú]n/i, "mexico"], [/t[oó]quio|tokyo|osaka/i, "japao"],
   [/foz do igua[cç]u/i, "foz-do-iguacu"], [/florian[oó]polis/i, "florianopolis"],

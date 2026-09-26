@@ -17,29 +17,31 @@ const D = [
   ["italia", "ITA", "Itália", "Roma", "FCO", "Fiumicino", "Europa", "italia", ["romanticos", "cultura-aventura"]],
   ["portugal", "POR", "Portugal", "Lisboa", "LIS", "Humberto Delgado", "Europa", "lisboa", ["familia", "cultura-aventura"]],
   ["porto", "POR", "Portugal", "Porto", "OPO", "Francisco Sá Carneiro", "Europa", "lisboa", ["romanticos", "cultura-aventura"]],
-  ["franca", "FRA", "França", "Paris", "CDG", "Charles de Gaulle", "Europa", "paris", ["romanticos", "cultura-aventura"]],
+  ["franca", "FRA", "França", "Paris", "CDG", "Charles de Gaulle", "Europa", "paris", ["romanticos", "cultura-aventura", "15-anos"]],
   ["espanha", "ESP", "Espanha", "Madri", "MAD", "Barajas", "Europa", "espanha", ["cultura-aventura", "familia"]],
-  ["reino-unido", "UK", "Reino Unido", "Londres", "LHR", "Heathrow", "Europa", "londres", ["cultura-aventura", "familia"]],
+  ["reino-unido", "UK", "Reino Unido", "Londres", "LHR", "Heathrow", "Europa", "londres", ["cultura-aventura", "familia", "15-anos"]],
   ["holanda", "HOL", "Holanda", "Amsterdã", "AMS", "Schiphol", "Europa", "holanda", ["cultura-aventura", "romanticos"]],
   ["alemanha", "ALE", "Alemanha", "Frankfurt", "FRA", "Frankfurt", "Europa", "alemanha", ["cultura-aventura"]],
   ["suica", "SUI", "Suíça", "Zurique", "ZRH", "Zurique", "Europa", "suica", ["romanticos", "cultura-aventura"]],
   ["grecia", "GRE", "Grécia", "Atenas", "ATH", "Eleftherios Venizelos", "Europa", "santorini", ["romanticos", "praias"]],
   ["turquia", "TUR", "Turquia", "Istambul", "IST", "Istambul", "Europa", "turquia", ["cultura-aventura"]],
   ["orlando", "ORL", "Estados Unidos", "Orlando", "MCO", "Orlando International", "América do Norte", "orlando", ["15-anos", "familia"]],
+  ["nova-york", "NYC", "Estados Unidos", "Nova York", "JFK", "John F. Kennedy", "América do Norte", "nova-york", ["15-anos", "familia", "cultura-aventura"]],
+  ["california", "LAX", "Estados Unidos", "Los Angeles", "LAX", "Los Angeles International", "América do Norte", "nova-york", ["15-anos", "familia"]],
   ["canada", "CAN", "Canadá", "Toronto", "YYZ", "Pearson", "América do Norte", "canada", ["familia", "cultura-aventura"]],
-  ["mexico", "MEX", "México", "Cancún", "CUN", "Cancún", "América Central", "cancun", ["praias", "romanticos", "familia"]],
-  ["argentina", "ARG", "Argentina", "Bariloche", "BRC", "Teniente Luis Candelaria", "América do Sul", "patagonia", ["romanticos", "familia", "cultura-aventura"]],
+  ["mexico", "MEX", "México", "Cancún", "CUN", "Cancún", "América Central", "cancun", ["praias", "romanticos", "familia", "15-anos"]],
+  ["argentina", "ARG", "Argentina", "Bariloche", "BRC", "Teniente Luis Candelaria", "América do Sul", "patagonia", ["romanticos", "familia", "cultura-aventura", "15-anos"]],
   ["chile", "CHI", "Chile", "Santiago", "SCL", "Arturo Merino Benítez", "América do Sul", "chile", ["familia", "cultura-aventura"]],
   ["peru", "PER", "Peru", "Lima", "LIM", "Jorge Chávez", "América do Sul", "peru", ["cultura-aventura"]],
-  ["japao", "JAP", "Japão", "Tóquio", "NRT", "Narita", "Ásia", "japao", ["cultura-aventura"]],
-  ["dubai", "DXB", "Emirados Árabes", "Dubai", "DXB", "Dubai International", "Oriente Médio", "dubai", ["familia", "romanticos"]],
+  ["japao", "JAP", "Japão", "Tóquio", "NRT", "Narita", "Ásia", "japao", ["cultura-aventura", "15-anos"]],
+  ["dubai", "DXB", "Emirados Árabes", "Dubai", "DXB", "Dubai International", "Oriente Médio", "dubai", ["familia", "romanticos", "15-anos"]],
   ["egito", "EGI", "Egito", "Cairo", "CAI", "Cairo International", "África", "egito", ["cultura-aventura"]],
   ["africa-do-sul", "AFS", "África do Sul", "Cidade do Cabo", "CPT", "Cape Town International", "África", "africa-do-sul", ["praias", "cultura-aventura"]],
 ];
 // artigo usado nas frases ("para a Itália", "para o Japão", "para Portugal")
 const ARTIGO = { italia: "a", franca: "a", espanha: "a", "reino-unido": "o", holanda: "a", alemanha: "a", suica: "a", grecia: "a",
   turquia: "a", canada: "o", mexico: "o", argentina: "a", chile: "o", peru: "o", japao: "o", egito: "o", "africa-do-sul": "a" };
-const EXIBICAO = { portugal: "Lisboa", porto: "Porto", orlando: "Orlando", dubai: "Dubai", argentina: "Bariloche" }; // destinos anunciados pela cidade
+const EXIBICAO = { portugal: "Lisboa", porto: "Porto", orlando: "Orlando", "nova-york": "Nova York", california: "Califórnia", dubai: "Dubai", argentina: "Bariloche" }; // destinos anunciados pela cidade
 const destinos = D.map((x, i) => ({
   id: x[0], slug: x[0], sigla: x[1], nome: x[2], cidade: x[3], aeroporto: x[4], nomeAeroporto: x[5], regiao: x[6],
   arte: x[7], campanhas: x[8], ativo: true, ordem: i, artigo: ARTIGO[x[0]] || "", nomeExibicao: EXIBICAO[x[0]] || x[2],
@@ -48,8 +50,8 @@ destinos.forEach((d) => aeroportos.push({ iata: d.aeroporto, nome: d.nomeAeropor
 
 // ---------------------------------------------------------------- campanhas (textos por público)
 const campanhas = [
-  { id: "15-anos", nome: "Aniversário de 15 anos", titulo: "Seus 15 anos em um lugar mágico",
-    texto: "Que tal comemorar seus 15 anos em um dos destinos mais mágicos do mundo? Transforme essa data especial em uma lembrança inesquecível.", ativa: true, ordem: 3 },
+  { id: "15-anos", nome: "Viagens de 15 anos", titulo: "Troque uma noite por memórias para a vida inteira",
+    texto: "Disney e Universal, Nova York, Londres e Paris, Califórnia, Cancún, Dubai, Japão ou neve em Bariloche: encontre a viagem que combina com esse momento único.", ativa: true, ordem: 3 },
   { id: "romanticos", nome: "Destinos românticos", titulo: "Para viver a dois",
     texto: "Que tal eternizar momentos ao lado do amor da sua vida? Viva uma experiência inesquecível em um destino feito para momentos a dois.", ativa: true, ordem: 1 },
   { id: "familia", nome: "Viagens em família", titulo: "Juntos é melhor",
@@ -81,6 +83,8 @@ const C = {
   grecia: ["Grécia: o azul que você sempre imaginou", "Casas brancas, cúpulas azuis, o mar Egeu e a história da Grécia antiga em Atenas. Um destino perfeito para viver a dois.", ["Pores do sol inesquecíveis nas ilhas", "Acrópole e sítios históricos", "Voos curtos de Atenas para as ilhas", "Culinária mediterrânea fresca e leve"]],
   turquia: ["Istambul, entre dois continentes", "Mesquitas, bazares perfumados e o Bósforo separando Europa e Ásia. Uma cidade intensa, acolhedora e cheia de contrastes.", ["Uma cidade entre Europa e Ásia", "Grande Bazar e mercados de especiarias", "Arquitetura bizantina e otomana", "Culinária rica e cheia de sabores"]],
   orlando: ["Orlando, onde a magia acontece", "Parques temáticos, compras e diversão para todas as idades. Um dos destinos mais mágicos do mundo para comemorar datas especiais em família ou com os amigos.", ["Parques temáticos para todas as idades", "Um dos destinos preferidos para festas de 15 anos", "Outlets e compras", "Clima quente boa parte do ano"]],
+  "nova-york": ["Nova York: seus 15 anos em cena", "Broadway, Times Square, museus, compras e os cenários mais famosos do cinema em uma viagem que combina perfeitamente com Orlando.", ["Combinação clássica com Orlando", "Broadway e Times Square", "Compras e atrações para adolescentes", "Uma cidade vibrante em qualquer estação"]],
+  california: ["Califórnia: parques, praias e Hollywood", "Los Angeles reúne estúdios, parques, praias e a atmosfera de Hollywood em um roteiro jovem, divertido e cheio de fotos inesquecíveis.", ["Hollywood e estúdios de cinema", "Parques temáticos", "Praias da Califórnia", "Ótima viagem em grupo"]],
   canada: ["Canadá: natureza grandiosa e cidades acolhedoras", "Toronto é moderna, multicultural e fica a poucas horas das Cataratas do Niágara. Uma viagem que agrada de crianças a avós.", ["Cataratas do Niágara por perto", "Cidades seguras e organizadas", "Outono com folhas vermelhas e neve no inverno", "Multiculturalismo e ótima gastronomia"]],
   mexico: ["Cancún: Caribe de águas turquesa", "Mar em tons de azul, resorts pé na areia e cenotes escondidos na mata. Perfeito para casais, famílias e quem só quer descansar.", ["Mar do Caribe de águas claras", "Resorts para todos os estilos", "Cenotes e sítios arqueológicos maias", "Voos com poucas conexões a partir do Brasil"]],
   argentina: ["Bariloche: neve, lagos e montanhas", "No inverno, Bariloche combina paisagens cobertas de neve, estações de esqui, chocolates artesanais e o azul intenso dos lagos da Patagônia. Uma viagem para viver o frio de verdade.", ["Neve e esportes de inverno", "Cerro Catedral e paisagens da Cordilheira", "Chocolate artesanal e gastronomia patagônica", "Lagos e mirantes inesquecíveis"]],
@@ -123,7 +127,8 @@ const R = [
   ["reino-unido", "2027-06-01", "2027-06-30", 8, 14, 1, false], ["holanda", "2027-04-01", "2027-04-30", 8, 12, 1, false],
   ["alemanha", "2026-11-25", "2026-12-15", 8, 14, 1, false], ["suica", "2027-01-15", "2027-02-28", 8, 14, 1, false],
   ["grecia", "2027-06-01", "2027-07-15", 10, 16, 2, false], ["turquia", "2027-04-01", "2027-05-15", 8, 14, 1, false],
-  ["orlando", "2027-01-10", "2027-02-15", 8, 14, 1, true], ["canada", "2027-09-15", "2027-10-31", 8, 14, 1, false],
+  ["orlando", "2027-01-10", "2027-02-15", 8, 14, 1, true], ["nova-york", "2027-01-05", "2027-02-15", 7, 12, 1, true],
+  ["california", "2027-06-20", "2027-08-10", 8, 14, 1, true], ["canada", "2027-09-15", "2027-10-31", 8, 14, 1, false],
   ["mexico", "2027-03-01", "2027-04-15", 6, 10, 1, false], ["argentina", "2027-07-01", "2027-08-20", 5, 8, 1, true],
   ["chile", "2027-07-01", "2027-08-15", 5, 8, 0, true], ["peru", "2027-05-01", "2027-06-30", 7, 12, 1, false],
   ["japao", "2027-03-20", "2027-04-20", 12, 18, 2, true], ["dubai", "2027-11-01", "2027-12-10", 7, 12, 1, false],
