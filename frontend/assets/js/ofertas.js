@@ -88,7 +88,7 @@
       '<div class="ad-tags">' + tagComercial(o.destinoId) + (opts.selo ? '<span class="tag tag--sun">' + esc(opts.selo) + "</span>" : "") + (camp ? '<span class="tag tag--glass">' + esc(camp.nome) + "</span>" : "") + "</div>" +
       '<span class="ad-code">' + esc(o.codigo) + "</span></a>" +
       '<div class="ad-body"><span class="ad-kicker">Passagem de ida e volta · ' + esc(d.cidade) + "</span>" +
-      '<h3><a href="' + urlOferta(o) + '" data-conhecer>' + esc(o.titulo) + "</a></h3>" +
+      '<h3><a href="' + urlOferta(o) + '" data-conhecer>' + esc(chamadaComercial(o.destinoId)) + "</a></h3>" +
       '<p class="ad-sub">' + esc(o.subtitulo) + "</p>" +
       fatosCard(o) +
       precoHTML(o) +
