@@ -184,9 +184,11 @@ create table if not exists flight_offers (
   moeda               text not null default 'BRL',
   preco               jsonb not null,                     -- resultado do motor de preços (anunciado, pix, parcelas…)
   preco_anunciado     numeric(12,2) generated always as ((preco->>'precoParcelado')::numeric) stored,
-  tipo_preco          text not null check (tipo_preco in ('ao_vivo','indicativo','manual','demonstrativo')),
+  tipo_preco          text not null check (tipo_preco in ('ao_vivo','indicativo','manual','demonstrativo','teste_api')),
   fonte               text not null,
   id_provedor         text,
+  taxas_inclusas      boolean not null default false,
+  expira_em           timestamptz,
   atualizacao_pendente jsonb,                             -- nova cotação aguardando aprovação
   pesquisado_em       timestamptz not null,
   publicado_em        timestamptz,

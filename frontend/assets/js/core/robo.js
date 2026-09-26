@@ -74,6 +74,28 @@
     var regras = db.regras.filter(function (r) { return r.ativo && (!opcoes.somenteRegraId || r.id === opcoes.somenteRegraId); });
     resumo.regras = regras.length;
 
+    // Divide o orçamento diário de consultas entre todas as regras e origens de
+    // cada grupo. A sobra é distribuída uma a uma, evitando que os primeiros
+    // destinos consumam toda a cota. Sem limites (painel/demo), o provedor usa
+    // sua quantidade padrão de amostras.
+    var cotasConsulta = {};
+    function destinoDa(regra) { return db.destinos.filter(function (d) { return d.id === regra.destinoId; })[0]; }
+    function nacional(destino) { return destino && (destino.pais === "Brasil" || destino.nome === "Brasil" || destino.regiao === "Brasil"); }
+    function distribuirCota(ehNacional, limite) {
+      if (!(limite >= 0)) return;
+      var grupos = [];
+      regras.forEach(function (r) {
+        var dest = destinoDa(r);
+        if (!!nacional(dest) !== ehNacional) return;
+        (r.origens && r.origens.length ? r.origens : ["SAO", "RIO"]).forEach(function (cidade) { grupos.push(r.id + "|" + cidade); });
+      });
+      if (!grupos.length) return;
+      var base = Math.floor(limite / grupos.length), sobra = limite % grupos.length;
+      grupos.forEach(function (k, i) { cotasConsulta[k] = base + (i < sobra ? 1 : 0); });
+    }
+    distribuirCota(false, opcoes.limiteConsultasInternacionais);
+    distribuirCota(true, opcoes.limiteConsultasNacionais);
+
     var fila = Promise.resolve();
     regras.forEach(function (regra) {
       fila = fila.then(function () { return processarRegra(regra); });
@@ -90,7 +112,7 @@
 
       var passos = cidades.map(function (cidade) {
         var aeroportos = aeroportosPorCidade[cidade] || [];
-        var base = { cidadeOrigem: cidade, aeroportosOrigem: aeroportos, aeroportoDestino: destino.aeroporto, adultos: 1, classe: regra.classe || "economica" };
+        var base = { cidadeOrigem: cidade, aeroportosOrigem: aeroportos, aeroportoDestino: destino.aeroporto, adultos: 1, classe: regra.classe || "economica", maxEscalas: regra.maxEscalas, amostrasConsultas: cotasConsulta[regra.id + "|" + cidade] };
         // 1. indicativos
         return provedor.searchIndicativePrices(Object.assign({}, base, { de: de, ate: regra.periodoFim, duracaoMin: regra.duracaoMin, duracaoMax: regra.duracaoMax }))
           .then(function (ind) {
@@ -145,7 +167,8 @@
         cidadeOrigem: cidade, aeroportoOrigem: o.aeroportoOrigem, aeroportoDestino: o.aeroportoDestino,
         dataIda: o.dataIda, dataVolta: o.dataVolta, companhia: o.companhia, escalasIda: o.escalasIda, escalasVolta: o.escalasVolta,
         classe: o.classe, bagagem: o.bagagem, custoOriginal: o.preco, moeda: o.moeda, preco: preco,
-        tipoPreco: o.tipoPreco || "ao_vivo", fonte: o.fonte || provedor.nome, idProvedor: o.idProvedor, pesquisadoEm: agoraS
+        tipoPreco: o.tipoPreco || "ao_vivo", fonte: o.fonte || provedor.nome, idProvedor: o.idProvedor, pesquisadoEm: agoraS,
+        taxasInclusas: o.taxasInclusas, expiraEm: o.expiraEm || null
       };
       // mesma regra = mesma oferta (atualiza em vez de duplicar)
       var existente = db.ofertas.filter(function (x) { return x.regraId === regra.id && ["expirado", "rejeitado"].indexOf(x.status) < 0; })[0];

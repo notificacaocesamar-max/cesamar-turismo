@@ -49,7 +49,7 @@ O mesmo arquivo roda no navegador (painel, simulador) e no robô (Node).
 ## Robô (`frontend/assets/js/core/robo.js` + `robo/`)
 
 Fluxo: indicativos → melhores datas → até 3 buscas ao vivo por origem → compara SP × RJ → mais barata válida → margem → parcelas → salva → prepara para aprovação → expira antigas.
-Fonte de tarifas plugável (`FlightProvider`): **DemoProvider** (simulado, determinístico por dia) e esqueletos para Amadeus, Duffel e Skyscanner (só no servidor, com chaves em variáveis de ambiente).
+Fonte de tarifas plugável (`FlightProvider`): **DemoProvider** (simulado, determinístico por dia), integração funcional com a **Duffel API** e esqueletos para Amadeus e Skyscanner. O robô distribui diariamente 80 consultas internacionais e 40 nacionais entre os destinos, datas e grupos aeroportuários `SAO` e `RIO`; aceita apenas resultados em BRL e mantém as chaves exclusivamente no servidor.
 
 ```bash
 npm test                         # 27 testes: preços, robô e mapeamento Supabase

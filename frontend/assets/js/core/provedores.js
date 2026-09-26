@@ -152,19 +152,112 @@
     return Promise.reject(new Error("AmadeusProvider.searchLiveOffers ainda não implementado"));
   };
 
-  function DuffelProvider(env) {
+  function DuffelProvider(env, opcoes) {
     exigirServidor("DuffelProvider");
     exigirEnv(env, ["DUFFEL_ACCESS_TOKEN"], "Duffel");
+    opcoes = opcoes || {};
     this.nome = "duffel"; this.env = env;
+    this.base = (env.DUFFEL_BASE_URL || "https://api.duffel.com").replace(/\/$/, "");
+    this.fetch = opcoes.fetch || (typeof fetch === "function" ? fetch : null);
+    if (!this.fetch) throw new Error("Duffel: fetch não está disponível neste Node.");
+    this.amostras = Math.max(1, Math.min(10, +(env.DUFFEL_DATE_SAMPLES || 3)));
+    this.timeoutMs = Math.max(5000, +(env.DUFFEL_TIMEOUT_MS || 25000));
+    this.supplierTimeoutMs = Math.max(3000, Math.min(this.timeoutMs - 1000, +(env.DUFFEL_SUPPLIER_TIMEOUT_MS || 15000)));
+    this.moeda = (env.DUFFEL_REQUIRED_CURRENCY || "BRL").toUpperCase();
+    this.cache = {};
   }
-  DuffelProvider.prototype.searchIndicativePrices = function () {
-    // Duffel não oferece calendário de preços indicativos: usar outro provedor para esta etapa
-    // ou amostrar poucas datas com offer_requests (atenção ao custo por consulta).
-    return Promise.reject(new Error("DuffelProvider não oferece preços indicativos — combine com outro provedor"));
+  DuffelProvider.prototype._chave = function (p) {
+    return [p.cidadeOrigem, p.aeroportoDestino, p.dataIda, p.dataVolta, p.classe || "economica"].join("|");
   };
-  DuffelProvider.prototype.searchLiveOffers = function () {
-    // TODO: POST https://api.duffel.com/air/offer_requests (header Duffel-Version) e mapear offers
-    return Promise.reject(new Error("DuffelProvider.searchLiveOffers ainda não implementado"));
+  DuffelProvider.prototype._classe = function (classe) {
+    return ({ economica: "economy", executiva: "business", primeira: "first", premium_economy: "premium_economy" })[classe] || "economy";
+  };
+  DuffelProvider.prototype._datasAmostra = function (p) {
+    var quantidade = p.amostrasConsultas == null ? this.amostras : Math.max(0, +p.amostrasConsultas);
+    var total = Math.max(0, diffDias(p.de, p.ate)), out = [], vistos = {};
+    for (var i = 0; i < quantidade; i++) {
+      var deslocamento = quantidade === 1 ? Math.floor(total / 2) : Math.round(total * i / (quantidade - 1));
+      var duracoes = [p.duracaoMin, Math.round((p.duracaoMin + p.duracaoMax) / 2), p.duracaoMax];
+      var ida = addDias(p.de, deslocamento), volta = addDias(ida, duracoes[i % duracoes.length]);
+      var k = ida + "|" + volta;
+      if (!vistos[k]) { vistos[k] = true; out.push({ dataIda: ida, dataVolta: volta }); }
+    }
+    return out;
+  };
+  DuffelProvider.prototype._mapearOferta = function (oferta) {
+    var slices = oferta.slices || [], ida = slices[0] || {}, volta = slices[1] || {};
+    var segIda = ida.segments || [], segVolta = volta.segments || [];
+    if (!segIda.length || !segVolta.length) return null;
+    var primeiro = segIda[0], ultimoIda = segIda[segIda.length - 1], primeiroVolta = segVolta[0], ultimoVolta = segVolta[segVolta.length - 1];
+    var moeda = String(oferta.total_currency || "").toUpperCase();
+    if (moeda !== this.moeda) return null; // não mistura moeda estrangeira com margem em reais
+    var passageiros = [].concat.apply([], slices.map(function (s) { return s.segments || []; })).reduce(function (acc, s) { return acc.concat(s.passengers || []); }, []);
+    var bagagem = passageiros.some(function (psg) { return (psg.baggages || []).some(function (b) { return b.type === "checked" && +b.quantity > 0; }); });
+    var cia = (primeiro.operating_carrier && primeiro.operating_carrier.name) || (oferta.owner && oferta.owner.name) || "Companhia aérea";
+    return {
+      idProvedor: oferta.id,
+      companhia: cia,
+      aeroportoOrigem: primeiro.origin && primeiro.origin.iata_code,
+      aeroportoDestino: ultimoIda.destination && ultimoIda.destination.iata_code,
+      dataIda: String(primeiro.departing_at || ida.departing_at || "").slice(0, 10),
+      dataVolta: String(primeiroVolta.departing_at || volta.departing_at || "").slice(0, 10),
+      escalasIda: Math.max(0, segIda.length - 1),
+      escalasVolta: Math.max(0, segVolta.length - 1),
+      bagagem: bagagem,
+      classe: "economica",
+      preco: +oferta.total_amount,
+      moeda: moeda,
+      fonte: "Duffel",
+      tipoPreco: oferta.live_mode === false ? "teste_api" : "ao_vivo",
+      taxasInclusas: true,
+      expiraEm: oferta.expires_at || null
+    };
+  };
+  DuffelProvider.prototype._buscar = async function (p) {
+    var origem = p.cidadeOrigem === "SAO" || p.cidadeOrigem === "RIO" ? p.cidadeOrigem : (p.aeroportosOrigem || [])[0];
+    var body = { data: {
+      slices: [
+        { origin: origem, destination: p.aeroportoDestino, departure_date: p.dataIda },
+        { origin: p.aeroportoDestino, destination: origem, departure_date: p.dataVolta }
+      ],
+      passengers: [{ type: "adult" }],
+      cabin_class: this._classe(p.classe),
+      max_connections: Math.max(0, Math.min(3, p.maxEscalas == null ? 1 : +p.maxEscalas))
+    } };
+    var controller = new AbortController(), timer = setTimeout(function () { controller.abort(); }, this.timeoutMs);
+    var resp;
+    try {
+      resp = await this.fetch(this.base + "/air/offer_requests?return_offers=true&supplier_timeout=" + this.supplierTimeoutMs, {
+        method: "POST", signal: controller.signal,
+        headers: { Authorization: "Bearer " + this.env.DUFFEL_ACCESS_TOKEN, Accept: "application/json", "Content-Type": "application/json", "Accept-Encoding": "gzip", "Duffel-Version": "v2" },
+        body: JSON.stringify(body)
+      });
+    } finally { clearTimeout(timer); }
+    var json = await resp.json().catch(function () { return {}; });
+    if (!resp.ok) {
+      var detalhe = json && json.errors && json.errors[0] && (json.errors[0].message || json.errors[0].title);
+      throw new Error("Duffel HTTP " + resp.status + (detalhe ? ": " + detalhe : ""));
+    }
+    var ofertas = (json.data && json.data.offers) || [];
+    var self = this;
+    return ofertas.map(function (o) { return self._mapearOferta(o); }).filter(function (o) {
+      return o && isFinite(o.preco) && o.preco > 0 && (p.aeroportosOrigem || []).indexOf(o.aeroportoOrigem) >= 0;
+    });
+  };
+  DuffelProvider.prototype.searchIndicativePrices = async function (p) {
+    var out = [], datas = this._datasAmostra(p);
+    for (var i = 0; i < datas.length; i++) {
+      var busca = Object.assign({}, p, datas[i]);
+      var ofertas = await this._buscar(busca);
+      this.cache[this._chave(busca)] = ofertas;
+      ofertas.forEach(function (o) { out.push({ aeroportoOrigem: o.aeroportoOrigem, aeroportoDestino: o.aeroportoDestino, dataIda: o.dataIda, dataVolta: o.dataVolta, preco: o.preco, moeda: o.moeda }); });
+    }
+    return out;
+  };
+  DuffelProvider.prototype.searchLiveOffers = function (p) {
+    var chave = this._chave(p);
+    if (Object.prototype.hasOwnProperty.call(this.cache, chave)) return Promise.resolve(this.cache[chave]);
+    return this._buscar(p);
   };
 
   function SkyscannerProvider(env) {
@@ -186,7 +279,7 @@
     switch ((nome || "demo").toLowerCase()) {
       case "demo": return new DemoProvider(opcoes);
       case "amadeus": return new AmadeusProvider(opcoes.env || {});
-      case "duffel": return new DuffelProvider(opcoes.env || {});
+      case "duffel": return new DuffelProvider(opcoes.env || {}, opcoes);
       case "skyscanner": return new SkyscannerProvider(opcoes.env || {});
       default: throw new Error("Provedor de tarifas desconhecido: " + nome);
     }

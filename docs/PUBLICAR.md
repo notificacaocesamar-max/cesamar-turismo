@@ -21,6 +21,7 @@ Equipe ──► /retaguarda (login Supabase Auth) ──► aprova/edita oferta
 ## 2. Banco no Supabase
 1. Crie um projeto (plano Free) na região São Paulo.
 2. No **SQL Editor**, rode `supabase/schema.sql` e depois `supabase/seed.sql`.
+   Se o banco já tiver sido criado com uma versão anterior, rode antes `supabase/migrations/002_duffel_campos.sql`.
 3. Em **Authentication → Users**, crie o usuário da equipe e rode no SQL Editor:
    `insert into admin_users (user_id, nome, papel) values ('<uuid>', 'Alexandre', 'admin');`
 4. Em **Project Settings → API**, anote `URL`, `anon key` (pode ir para o frontend) e `service_role key` (**somente** no Cloud Run).
@@ -54,6 +55,20 @@ gcloud scheduler jobs create http cesamar-robo-diario --location $REGIAO \
   --uri "https://run.googleapis.com/v2/projects/$PROJETO/locations/$REGIAO/jobs/cesamar-robo:run" \
   --http-method POST --oauth-service-account-email $SA
 ```
+
+### Alternativa inicial sem Cloud Run: GitHub Actions
+
+O arquivo `.github/workflows/robo-diario.yml` executa o mesmo robô todos os dias às 06:00 de Brasília. Para ativar, cadastre em **Settings → Secrets and variables → Actions**:
+
+- `DUFFEL_ACCESS_TOKEN`
+- `SUPABASE_URL`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+Enquanto algum segredo estiver ausente, a rotina encerra sem consultar tarifas nem gerar dados falsos. Também é possível testar manualmente em **Actions → Monitorar passagens → Run workflow**.
+
+Essa alternativa é adequada para validar o produto com baixo custo. O Cloud Run continua sendo a opção indicada quando o volume e o controle operacional aumentarem.
+
+O orçamento padrão de pesquisa é de **80 consultas internacionais + 40 nacionais por dia**. O robô divide essas consultas de forma equilibrada entre todas as regras ativas, as origens `SAO`/`RIO` e datas distintas. Os limites podem ser alterados por `ROBO_CONSULTAS_INTERNACIONAIS` e `ROBO_CONSULTAS_NACIONAIS`.
 
 ## 4. Provedor de tarifas real
 1. Escolha o fornecedor e obtenha credenciais **de teste**:

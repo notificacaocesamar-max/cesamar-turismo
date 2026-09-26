@@ -15,7 +15,7 @@ const num = (v) => (v === null || v === undefined ? v : Number(v));
 
 const CAMPOS_OFERTA = ["id", "codigo", "regraId", "destinoId", "campanhaId", "status", "titulo", "subtitulo", "chamada", "textosAuto",
   "cidadeOrigem", "aeroportoOrigem", "aeroportoDestino", "dataIda", "dataVolta", "companhia", "escalasIda", "escalasVolta", "classe",
-  "bagagem", "custoOriginal", "moeda", "preco", "tipoPreco", "fonte", "idProvedor", "atualizacaoPendente", "pesquisadoEm", "publicadoEm",
+  "bagagem", "custoOriginal", "moeda", "preco", "tipoPreco", "fonte", "idProvedor", "taxasInclusas", "expiraEm", "atualizacaoPendente", "pesquisadoEm", "publicadoEm",
   "aprovadoPor", "criadoEm", "atualizadoEm"];
 
 /** Converte as linhas do banco no objeto `db` do robô. */

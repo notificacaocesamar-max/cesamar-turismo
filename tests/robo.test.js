@@ -124,3 +124,70 @@ test("provedores reais exigem credenciais e não inventam chaves", () => {
   assert.throws(() => Prov.criarProvedor("skyscanner", { env: {} }), /SKYSCANNER_API_KEY/);
   assert.throws(() => Prov.criarProvedor("xpto", {}), /desconhecido/);
 });
+
+test("Duffel consulta somente RJ/SP, mapeia tarifa com taxas e reutiliza o resultado ao vivo", async () => {
+  const chamadas = [];
+  const fetchFake = async (url, opcoes) => {
+    chamadas.push({ url, opcoes, body: JSON.parse(opcoes.body) });
+    const ida = JSON.parse(opcoes.body).data.slices[0];
+    const volta = JSON.parse(opcoes.body).data.slices[1];
+    const aeroporto = ida.origin === "RIO" ? "GIG" : "GRU";
+    const trecho = (origem, destino, data, carrier) => ({
+      departing_at: data + "T10:00:00",
+      origin: { iata_code: origem }, destination: { iata_code: destino },
+      operating_carrier: { name: carrier },
+      passengers: [{ baggages: [{ type: "checked", quantity: 1 }] }]
+    });
+    return {
+      ok: true, status: 200,
+      json: async () => ({ data: { offers: [{
+        id: "off_teste", live_mode: false, total_amount: "4300.00", total_currency: "BRL",
+        expires_at: "2026-09-25T12:00:00Z",
+        slices: [
+          { segments: [trecho(aeroporto, ida.destination, ida.departure_date, "Companhia Teste")] },
+          { segments: [trecho(volta.origin, aeroporto, volta.departure_date, "Companhia Teste")] }
+        ]
+      }] } })
+    };
+  };
+  const p = Prov.criarProvedor("duffel", {
+    env: { DUFFEL_ACCESS_TOKEN: "token_teste", DUFFEL_DATE_SAMPLES: "1" }, fetch: fetchFake
+  });
+  const params = { cidadeOrigem: "RIO", aeroportosOrigem: ["GIG", "SDU"], aeroportoDestino: "MAD", de: "2027-04-01", ate: "2027-04-30", duracaoMin: 7, duracaoMax: 10, classe: "economica", maxEscalas: 1 };
+  const indicativas = await p.searchIndicativePrices(params);
+  assert.equal(chamadas.length, 1);
+  assert.equal(chamadas[0].body.data.slices[0].origin, "RIO");
+  assert.equal(chamadas[0].body.data.slices[1].destination, "RIO");
+  assert.equal(chamadas[0].opcoes.headers.Authorization, "Bearer token_teste");
+  const ofertas = await p.searchLiveOffers(Object.assign({}, params, { dataIda: indicativas[0].dataIda, dataVolta: indicativas[0].dataVolta }));
+  assert.equal(chamadas.length, 1, "a cotação ao vivo deve vir do cache da busca já feita");
+  assert.equal(ofertas[0].aeroportoOrigem, "GIG");
+  assert.equal(ofertas[0].preco, 4300);
+  assert.equal(ofertas[0].taxasInclusas, true);
+  assert.equal(ofertas[0].bagagem, true);
+  assert.equal(ofertas[0].tipoPreco, "teste_api");
+});
+
+test("Duffel rejeita moeda diferente de BRL para não aplicar margem incorreta", async () => {
+  const fetchFake = async (_url, opcoes) => {
+    const body = JSON.parse(opcoes.body), ida = body.data.slices[0], volta = body.data.slices[1];
+    const segmento = (origem, destino, data) => ({ departing_at: data + "T10:00:00", origin: { iata_code: origem }, destination: { iata_code: destino }, passengers: [] });
+    return { ok: true, status: 200, json: async () => ({ data: { offers: [{ id: "off_usd", total_amount: "700", total_currency: "USD", slices: [{ segments: [segmento("GRU", "MCO", ida.departure_date)] }, { segments: [segmento("MCO", "GRU", volta.departure_date)] }] }] } }) };
+  };
+  const p = Prov.criarProvedor("duffel", { env: { DUFFEL_ACCESS_TOKEN: "token", DUFFEL_DATE_SAMPLES: "1" }, fetch: fetchFake });
+  const r = await p.searchIndicativePrices({ cidadeOrigem: "SAO", aeroportosOrigem: ["GRU", "CGH", "VCP"], aeroportoDestino: "MCO", de: "2027-04-01", ate: "2027-04-30", duracaoMin: 7, duracaoMax: 10 });
+  assert.deepEqual(r, []);
+});
+
+test("distribui exatamente 80 consultas internacionais entre destinos e origens", async () => {
+  const db = novoDb();
+  const cotas = [];
+  const p = {
+    nome: "contador",
+    async searchIndicativePrices(params) { cotas.push(params.amostrasConsultas); return []; },
+    async searchLiveOffers() { throw new Error("não deveria consultar ao vivo sem indicativos"); }
+  };
+  await Robo.executar(db, { provedor: p, agora: AGORA, limiteConsultasInternacionais: 80, limiteConsultasNacionais: 40 });
+  assert.equal(cotas.reduce((s, n) => s + n, 0), 80);
+  assert.ok(Math.max(...cotas) - Math.min(...cotas) <= 1, "a cota deve ser equilibrada");
+});

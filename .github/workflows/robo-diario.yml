@@ -1,0 +1,54 @@
+name: Monitorar passagens
+
+on:
+  schedule:
+    # 06:00 em Brasília (UTC-3)
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cesamar-robo-diario
+  cancel-in-progress: false
+
+jobs:
+  monitorar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      FLIGHT_PROVIDER: duffel
+      ROBO_ARMAZENAMENTO: supabase
+      DUFFEL_ACCESS_TOKEN: ${{ secrets.DUFFEL_ACCESS_TOKEN }}
+      DUFFEL_DATE_SAMPLES: "3"
+      DUFFEL_REQUIRED_CURRENCY: BRL
+      ROBO_CONSULTAS_INTERNACIONAIS: "80"
+      ROBO_CONSULTAS_NACIONAIS: "40"
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Verificar configuração
+        id: config
+        shell: bash
+        run: |
+          if [[ -n "$DUFFEL_ACCESS_TOKEN" && -n "$SUPABASE_URL" && -n "$SUPABASE_SERVICE_ROLE_KEY" ]]; then
+            echo "pronto=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "pronto=false" >> "$GITHUB_OUTPUT"
+            echo "Robô aguardando os segredos DUFFEL_ACCESS_TOKEN, SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY."
+          fi
+
+      - name: Testar o núcleo
+        if: steps.config.outputs.pronto == 'true'
+        run: npm test
+
+      - name: Consultar tarifas e salvar ofertas pendentes
+        if: steps.config.outputs.pronto == 'true'
+        run: npm run robo
