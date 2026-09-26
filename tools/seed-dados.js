@@ -50,8 +50,8 @@ destinos.forEach((d) => aeroportos.push({ iata: d.aeroporto, nome: d.nomeAeropor
 
 // ---------------------------------------------------------------- campanhas (textos por público)
 const campanhas = [
-  { id: "15-anos", nome: "Viagens de 15 anos", titulo: "Troque uma noite por memórias para a vida inteira",
-    texto: "Disney e Universal, Nova York, Londres e Paris, Califórnia, Cancún, Dubai, Japão ou neve em Bariloche: encontre a viagem que combina com esse momento único.", ativa: true, ordem: 3 },
+  { id: "15-anos", nome: "Viagens de 15 anos e formaturas", titulo: "Celebre sua conquista com memórias para a vida inteira",
+    texto: "Disney e Universal, Nova York, Londres e Paris, Califórnia, Cancún, Dubai, Japão ou neve em Bariloche: roteiros especiais para debutantes, formandos, famílias e grupos de amigos.", ativa: true, ordem: 3 },
   { id: "romanticos", nome: "Destinos românticos", titulo: "Para viver a dois",
     texto: "Que tal eternizar momentos ao lado do amor da sua vida? Viva uma experiência inesquecível em um destino feito para momentos a dois.", ativa: true, ordem: 1 },
   { id: "familia", nome: "Viagens em família", titulo: "Juntos é melhor",
@@ -83,7 +83,7 @@ const C = {
   grecia: ["Grécia: o azul que você sempre imaginou", "Casas brancas, cúpulas azuis, o mar Egeu e a história da Grécia antiga em Atenas. Um destino perfeito para viver a dois.", ["Pores do sol inesquecíveis nas ilhas", "Acrópole e sítios históricos", "Voos curtos de Atenas para as ilhas", "Culinária mediterrânea fresca e leve"]],
   turquia: ["Istambul, entre dois continentes", "Mesquitas, bazares perfumados e o Bósforo separando Europa e Ásia. Uma cidade intensa, acolhedora e cheia de contrastes.", ["Uma cidade entre Europa e Ásia", "Grande Bazar e mercados de especiarias", "Arquitetura bizantina e otomana", "Culinária rica e cheia de sabores"]],
   orlando: ["Orlando, onde a magia acontece", "Parques temáticos, compras e diversão para todas as idades. Um dos destinos mais mágicos do mundo para comemorar datas especiais em família ou com os amigos.", ["Parques temáticos para todas as idades", "Um dos destinos preferidos para festas de 15 anos", "Outlets e compras", "Clima quente boa parte do ano"]],
-  "nova-york": ["Nova York: seus 15 anos em cena", "Broadway, Times Square, museus, compras e os cenários mais famosos do cinema em uma viagem que combina perfeitamente com Orlando.", ["Combinação clássica com Orlando", "Broadway e Times Square", "Compras e atrações para adolescentes", "Uma cidade vibrante em qualquer estação"]],
+  "nova-york": ["Nova York: sua celebração em cena", "Broadway, Times Square, museus, compras e os cenários mais famosos do cinema em uma viagem que combina com 15 anos, formaturas e grupos de amigos.", ["Combinação clássica com Orlando", "Broadway e Times Square", "Compras e atrações para jovens", "Uma cidade vibrante em qualquer estação"]],
   california: ["Califórnia: parques, praias e Hollywood", "Los Angeles reúne estúdios, parques, praias e a atmosfera de Hollywood em um roteiro jovem, divertido e cheio de fotos inesquecíveis.", ["Hollywood e estúdios de cinema", "Parques temáticos", "Praias da Califórnia", "Ótima viagem em grupo"]],
   canada: ["Canadá: natureza grandiosa e cidades acolhedoras", "Toronto é moderna, multicultural e fica a poucas horas das Cataratas do Niágara. Uma viagem que agrada de crianças a avós.", ["Cataratas do Niágara por perto", "Cidades seguras e organizadas", "Outono com folhas vermelhas e neve no inverno", "Multiculturalismo e ótima gastronomia"]],
   mexico: ["Cancún: Caribe de águas turquesa", "Mar em tons de azul, resorts pé na areia e cenotes escondidos na mata. Perfeito para casais, famílias e quem só quer descansar.", ["Mar do Caribe de águas claras", "Resorts para todos os estilos", "Cenotes e sítios arqueológicos maias", "Voos com poucas conexões a partir do Brasil"]],
