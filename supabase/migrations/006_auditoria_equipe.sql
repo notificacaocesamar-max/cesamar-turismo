@@ -22,7 +22,7 @@ as $$
 declare v_perfil public.staff_profiles%rowtype; v_id bigint;
 begin
   if not public.equipe_mfa_ok() then raise exception 'TOTP obrigatório'; end if;
-  select * into v_perfil from public.staff_profiles where id = auth.uid() and ativo = true;
+  select * into v_perfil from public.staff_profiles where auth_user_id = auth.uid() and ativo = true;
   if v_perfil.id is null then raise exception 'Usuário sem acesso ativo'; end if;
   insert into public.staff_audit_logs(user_id,autor,acao,detalhe)
   values(v_perfil.id,v_perfil.nome_completo,left(p_acao,300),left(coalesce(p_detalhe,''),1000))
