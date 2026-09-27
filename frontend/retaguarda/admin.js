@@ -43,7 +43,7 @@
   window.CesamarAdminEntrar = entrar;
 
   /* ------------------------------------------------------------ navegação */
-  $("#adm-nav").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) ir(b.dataset.view); });
+  $("#adm-nav").addEventListener("click", function (e) { var b = e.target.closest("button[data-view]"); if (b) ir(b.dataset.view); });
   function ir(v) {
     view = v;
     $$("#adm-nav button").forEach(function (b) { b.classList.toggle("on", b.dataset.view === v); });
