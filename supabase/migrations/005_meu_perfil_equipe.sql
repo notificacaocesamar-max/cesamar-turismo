@@ -7,7 +7,8 @@ security definer
 set search_path = public
 as $$
 begin
-  if not equipe_mfa_ok() then
+  if auth.role() <> 'authenticated'
+     or coalesce(auth.jwt()->>'aal', 'aal1') <> 'aal2' then
     raise exception 'MFA obrigatório';
   end if;
 
