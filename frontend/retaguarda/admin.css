@@ -9,6 +9,10 @@ body.adm { background: #f1eee9; }
 .adm-login-card h1 { font-size: 2rem; text-align: center; margin: 0; }
 .adm-login-card > p.muted { text-align: center; margin: -6px 0 6px; font-size: .92rem; }
 .adm-login-msg { min-height: 1.2em; margin: 0; font-size: .86rem; color: var(--coral); text-align: center; }
+.adm-login-msg[data-tipo="progresso"] { color: var(--indigo); }
+.adm-login-msg[data-tipo="sucesso"] { color: #176b42; }
+#l-totp { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 1.35rem; letter-spacing: .28em; text-align: center; }
+#mfa-qr img { background: #fff; padding: 10px; border-radius: 14px; }
 
 /* Layout */
 .adm-app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }

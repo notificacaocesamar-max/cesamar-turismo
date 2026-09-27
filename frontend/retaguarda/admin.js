@@ -35,7 +35,8 @@
   function regraDestino(id) { return db().precos.filter(function (r) { return r.destinoId === id; })[0]; }
 
   /* ------------------------------------------------------------ login (demonstração) */
-  function entrar(nome) {
+  function entrar(nome, viewInicial) {
+    if (viewInicial) view = viewInicial;
     usuario = nome; try { sessionStorage.setItem(SS, nome); } catch (e) { }
     $("#login").hidden = true; $("#app").hidden = false; $("#user-nome").textContent = nome; ir(view);
   }

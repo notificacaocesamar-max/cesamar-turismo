@@ -101,11 +101,6 @@ const conteudos = destinos.map((d) => ({
 
 // ---------------------------------------------------------------- imagens
 const imagens = [];
-destinos.forEach((d) => {
-  imagens.push({ id: "img-" + d.id + "-1", destinoId: d.id, url: "assets/img/destinos/" + d.arte + ".svg", alt: "Ilustração de " + d.cidade + ", " + d.nome, credito: "Ilustração demonstrativa Cesamar", principal: true, ordem: 1, demonstrativa: true });
-  imagens.push({ id: "img-" + d.id + "-2", destinoId: d.id, url: "assets/img/galeria/" + d.arte + "-a.svg", alt: "Detalhe da ilustração de " + d.cidade, credito: "Ilustração demonstrativa Cesamar", principal: false, ordem: 2, demonstrativa: true });
-  imagens.push({ id: "img-" + d.id + "-3", destinoId: d.id, url: "assets/img/galeria/" + d.arte + "-b.svg", alt: "Outro detalhe da ilustração de " + d.cidade, credito: "Ilustração demonstrativa Cesamar", principal: false, ordem: 3, demonstrativa: true });
-});
 imagens.unshift.apply(imagens, require("./fotos-biblioteca.js").imagens());
 
 // Seleção editorial de fotos reais. `meses` permite combinar a imagem com a
