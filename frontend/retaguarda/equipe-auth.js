@@ -8,6 +8,12 @@
     if(/invalid.*code|challenge|factor/i.test(texto)) texto="Código inválido ou expirado. Aguarde o próximo código do aplicativo e tente novamente.";
     estado(texto,"erro");
   }
+  function mostrarLogin(){
+    mfa.hidden=true;
+    form.querySelector("button[type=submit]").hidden=false;
+    form.usuario.closest(".field").hidden=false;
+    form.senha.closest(".field").hidden=false;
+  }
   function rpc(nome,args){ return sb.rpc(nome,args||{}).then(function(r){if(r.error)throw r.error;return r.data;}); }
   async function carregarPerfil(){
     var u=await sb.auth.getUser(); if(u.error||!u.data.user)throw new Error("Sua sessão expirou. Entre novamente.");
@@ -42,6 +48,14 @@
   form.addEventListener("submit",function(e){e.preventDefault();e.stopImmediatePropagation();estado("Entrando…","progresso");
     sb.auth.signInWithPassword({email:form.usuario.value.trim(),password:form.senha.value}).then(function(r){if(r.error)throw r.error;estado("");return aposSenha();}).catch(erro);
   },true);
+  form.usuario.addEventListener("input",function(){
+    if(!mfa.hidden)return;
+    if(msg.dataset.tipo==="erro")estado("");
+  });
+  form.senha.addEventListener("input",function(){
+    if(!mfa.hidden)return;
+    if(msg.dataset.tipo==="erro")estado("");
+  });
   async function validarTotp(){
     var botao=document.getElementById("btn-totp");
     try{ var codigo=document.getElementById("l-totp").value;
@@ -71,5 +85,16 @@
     document.getElementById("adm-main").innerHTML='<header class="adm-head"><div><span class="eyebrow">Somente Gerencial</span><h1>Controle gerencial</h1></div></header><div class="adm-card adm-table-wrap"><table class="adm-table"><thead><tr><th>Funcionário</th><th>Perfil</th><th>Status atual</th><th>Histórico (60 dias)</th></tr></thead><tbody>'+(p.data||[]).map(function(x){var hist=(s.data||[]).filter(function(y){return y.user_id===x.id;}).map(function(y){return '<small>'+new Date(y.inicio).toLocaleString('pt-BR')+' — '+(y.fim?new Date(y.fim).toLocaleString('pt-BR'):'agora')+'</small>';}).join('');return '<tr><td><b>'+esc(x.nome_completo)+'</b></td><td>'+esc(x.papel)+'</td><td><span class="st '+(abertas[x.id]?'st-publicado':'st-rejeitado')+'">'+(abertas[x.id]?'Atendendo':'Indisponível')+'</span></td><td>'+ (hist||'Sem registros')+'</td></tr>';}).join('')+'</tbody></table></div>';
   }
   document.getElementById("adm-nav").addEventListener("click",function(e){var b=e.target.closest("[data-equipe-view]");if(!b)return;e.preventDefault();e.stopImmediatePropagation();if(b.dataset.equipeView==="perfil")abrirPerfil();else abrirControle();},true);
-  (async function(){try{if(location.search.indexOf("logout=1")>=0){await sb.auth.signOut();history.replaceState({},"",location.pathname);}var u=await sb.auth.getUser();if(u.data&&u.data.user)await aposSenha();}catch(e){erro(e);}})();
+  (async function(){
+    try{
+      if(location.search.indexOf("logout=1")>=0){await sb.auth.signOut();history.replaceState({},"",location.pathname);}
+      var u=await sb.auth.getUser();
+      if(u.data&&u.data.user)await aposSenha();
+    }catch(e){
+      await sb.auth.signOut({scope:"local"});
+      mostrarLogin();
+      form.senha.value="";
+      estado("A sessão anterior foi encerrada. Digite novamente seu e-mail e sua senha.","progresso");
+    }
+  })();
 })();
