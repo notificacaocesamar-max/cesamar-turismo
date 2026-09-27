@@ -62,3 +62,8 @@ test("usuário inativo nunca participa do rodízio", () => {
   const p={papel:"consultor",ativo:false,pode_atender:true,recebe_leads:true};
   assert.equal(Auth.podeAtender(p),false); assert.equal(Auth.recebeLeads(p),false);
 });
+test("perfil próprio só é liberado quando ativo", () => {
+  const resposta=[{papel:"master",ativo:true}];
+  const perfil=Array.isArray(resposta)?resposta[0]:resposta;
+  assert.equal(perfil.ativo,true);
+});

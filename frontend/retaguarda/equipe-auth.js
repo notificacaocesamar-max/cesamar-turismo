@@ -11,8 +11,10 @@
   function rpc(nome,args){ return sb.rpc(nome,args||{}).then(function(r){if(r.error)throw r.error;return r.data;}); }
   async function carregarPerfil(){
     var u=await sb.auth.getUser(); if(u.error||!u.data.user)throw new Error("Sua sessão expirou. Entre novamente.");
-    var r=await sb.from("staff_profiles").select("id,auth_user_id,nome_completo,email,whatsapp,papel,oculto,pode_atender,recebe_leads,ativo").eq("auth_user_id",u.data.user.id).maybeSingle();
-    if(r.error||!r.data||!r.data.ativo) throw new Error("Usuário sem acesso ativo ao portal."); perfil=r.data;
+    var r=await sb.rpc("meu_perfil_equipe");
+    if(r.error) throw r.error;
+    perfil=Array.isArray(r.data)?r.data[0]:r.data;
+    if(!perfil||!perfil.ativo) throw new Error("Usuário sem acesso ativo ao portal.");
     sessionStorage.setItem("cesamar.equipe.perfil",JSON.stringify(perfil));
     document.querySelectorAll("#adm-nav button").forEach(function(b){
       var view=b.dataset.equipeView||b.dataset.view;
