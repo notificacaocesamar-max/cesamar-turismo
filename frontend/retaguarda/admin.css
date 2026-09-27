@@ -158,3 +158,4 @@ body.adm { background: #f1eee9; }
 .img-btns { grid-column: 1 / -1; display: flex; gap: 8px; flex-wrap: wrap; }
 @media (max-width: 700px) { .img-item { grid-template-columns: 1fr; } }
 @media (max-width: 860px) { .adm-side nav { flex-wrap: wrap; } }
+.btn--danger{background:#b3261e!important;color:#fff!important;border-color:#b3261e!important}.adm-return{display:block;margin-bottom:12px;color:#fff!important;text-decoration:none;font-weight:700}

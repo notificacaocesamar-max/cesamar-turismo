@@ -13,7 +13,7 @@
   function recebeLeads(perfil) { return podeAtender(perfil) && perfil.recebe_leads === true; }
   function viewsPermitidas(perfil) {
     if (!perfil || perfil.ativo === false) return [];
-    if (perfil.papel === "master" || perfil.papel === "gerencial") return ["painel","perfil","controle","ofertas","robo","regras","precos","destinos","textos","imagens","whatsapp","metricas","config"];
+    if (perfil.papel === "master" || perfil.papel === "gerencial") return ["painel","perfil","controle","ofertas","robo","regras","precos","destinos","textos","imagens","whatsapp","metricas","auditoria","config"];
     if (perfil.papel === "consultor") return ["perfil","ofertas"];
     return [];
   }

@@ -29,7 +29,11 @@
   function uid(p) { return p + "-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
   function opts(lista, atual) { return lista.map(function (o) { return '<option value="' + esc(o[0]) + '"' + (String(o[0]) === String(atual) ? " selected" : "") + ">" + esc(o[1]) + "</option>"; }).join(""); }
   function num(v) { if (v === "" || v == null) return ""; var n = parseFloat(String(v).replace(",", ".")); return isFinite(n) ? n : ""; }
-  function auditar(acao, detalhe) { db().logs.unshift({ id: uid("LOG"), execucaoId: null, nivel: "info", etapa: "painel", mensagem: usuario + ": " + acao + (detalhe ? " — " + detalhe : ""), destinoId: null, criadoEm: new Date().toISOString() }); }
+  function auditar(acao, detalhe) {
+    var registro = { id: uid("LOG"), execucaoId: null, nivel: "info", etapa: "painel", autor: usuario, acao: acao, detalhe: detalhe || "", mensagem: usuario + ": " + acao + (detalhe ? " — " + detalhe : ""), destinoId: null, criadoEm: new Date().toISOString() };
+    db().logs.unshift(registro);
+    if (window.CesamarEquipeAuditar) window.CesamarEquipeAuditar(acao, detalhe || "");
+  }
   function head(eyebrow, titulo, extra) { return '<header class="adm-head"><div><span class="eyebrow">' + eyebrow + "</span><h1>" + titulo + "</h1></div>" + (extra || "") + "</header>"; }
   function regraPadrao() { return db().precos.filter(function (r) { return !r.destinoId; })[0]; }
   function regraDestino(id) { return db().precos.filter(function (r) { return r.destinoId === id; })[0]; }
@@ -49,7 +53,7 @@
     $$("#adm-nav button").forEach(function (b) { b.classList.toggle("on", b.dataset.view === v); });
     var pend = db().ofertas.filter(function (o) { return o.status === "aguardando_aprovacao" || o.atualizacaoPendente; }).length;
     $("#pill-pend").hidden = !pend; $("#pill-pend").textContent = pend;
-    ({ painel: vPainel, ofertas: vOfertas, robo: vRobo, regras: vRegras, precos: vPrecos, destinos: vDestinos, textos: vTextos, imagens: vImagens, whatsapp: vWhats, metricas: vMetricas, config: vConfig }[v] || vPainel)();
+    ({ painel: vPainel, ofertas: vOfertas, robo: vRobo, regras: vRegras, precos: vPrecos, destinos: vDestinos, textos: vTextos, imagens: vImagens, whatsapp: vWhats, metricas: vMetricas, auditoria: vAuditoria, config: vConfig }[v] || vPainel)();
     window.scrollTo(0, 0);
   }
   function main(html) { $("#adm-main").innerHTML = html; }
@@ -129,7 +133,8 @@
     if (["rejeitado", "expirado"].indexOf(o.status) >= 0) acoes.push(["rascunho", "Voltar para rascunho", "btn--ghost"]);
     abrir('<span class="st st-' + o.status + '">' + stNome(o.status) + '</span><h2 style="margin:12px 0 2px">' + esc(o.codigo) + " · " + esc(destNome(o.destinoId)) + '</h2><p class="muted" style="margin:0">Pesquisado ' + dt(o.pesquisadoEm) + " · fonte " + esc(o.fonte) + " · " + esc(tipoNome(o.tipoPreco)) + "</p>" +
       '<div class="d-actions">' + acoes.map(function (a) { return '<button class="btn btn--sm ' + a[2] + '" data-st-acao="' + a[0] + '">' + a[1] + "</button>"; }).join("") +
-      '<a class="btn btn--sm btn--ghost" target="_blank" href="../pages/oferta.html?codigo=' + encodeURIComponent(o.codigo) + '&preview=1">Pré-visualizar</a></div>' +
+      '<a class="btn btn--sm btn--ghost" target="_blank" href="../pages/oferta.html?codigo=' + encodeURIComponent(o.codigo) + '&preview=1">Pré-visualizar</a>' +
+      '<button class="btn btn--sm btn--danger" id="excluir-oferta" type="button">Excluir oferta</button></div>' +
       (pend ? '<div class="adm-alert"><b>Nova cotação encontrada pelo robô</b><br>' + CID[pend.cidadeOrigem] + " (" + pend.aeroportoOrigem + ") · " + dBR(pend.dataIda) + "–" + dBR(pend.dataVolta) + " · " + esc(pend.companhia) + "<br>Custo " + brl(pend.custoOriginal) + " → anúncio <b>" + brl(pend.preco.precoParcelado) + "</b> (" + pend.preco.parcelas + "x " + brl(pend.preco.valorParcela) + ') · atual ' + brl(p.precoParcelado) + '<div style="margin-top:10px;display:flex;gap:8px"><button class="btn btn--sm btn--wa" data-pend="aplicar">Aprovar nova cotação</button><button class="btn btn--sm btn--ghost" data-pend="descartar">Descartar</button></div></div>' : "") +
       '<div class="d-grid">' + [["Origem", CID[o.cidadeOrigem] + " · " + o.aeroportoOrigem], ["Destino", o.aeroportoDestino], ["Ida", dBR(o.dataIda)], ["Volta", dBR(o.dataVolta)], ["Companhia", o.companhia], ["Escalas", "ida " + o.escalasIda + " · volta " + o.escalasVolta], ["Bagagem", o.bagagem ? "Incluída" : "Não incluída"], ["Classe", { economica: "Econômica", premium: "Premium economy", executiva: "Executiva" }[o.classe] || o.classe],
         ["Custo original", brl(o.custoOriginal)], ["Preço anunciado", brl(p.precoParcelado)], ["Preço Pix", brl(p.precoPix)], ["Parcelas", p.parcelas + "x " + brl(p.valorParcela)], ["Ganho", brl(p.ganhoReais) + " (" + String(p.ganhoPct).replace(".", ",") + "%)"], ["Cliques WhatsApp", o.cliques || 0]]
@@ -156,6 +161,15 @@
         auditar("oferta " + o.codigo + ": " + stNome(antes) + " → " + stNome(o.status));
         salvar("Oferta " + o.codigo + ": " + stNome(o.status)); abrirOferta(cod); if (view === "ofertas") vOfertas();
       });
+    });
+    $("#excluir-oferta").addEventListener("click", function () {
+      if (!window.confirm("Excluir permanentemente a oferta " + o.codigo + "? Esta ação não pode ser desfeita.")) return;
+      var tituloExcluido = o.titulo;
+      D.ofertas = D.ofertas.filter(function (item) { return item.codigo !== cod; });
+      auditar("oferta excluída", cod + " · " + tituloExcluido);
+      salvar("Oferta " + cod + " excluída");
+      fechar();
+      vOfertas();
     });
     $$("[data-pend]").forEach(function (b) {
       b.addEventListener("click", function () {
@@ -583,6 +597,28 @@
       var csv = "data_hora;oferta;destino;origem;campanha;pagina\n" + D.cliques.map(function (c) { return [c.ts, c.ofertaCodigo || "", c.destinoId || "", c.cidadeOrigem || "", c.campanhaId || "", c.pagina].join(";"); }).join("\n");
       var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" })); a.download = "cesamar-cliques-whatsapp.csv"; a.click();
     });
+  }
+
+  /* ============================================================ AUDITORIA */
+  function vAuditoria() {
+    var locais = db().logs.filter(function (l) { return l.etapa === "painel"; });
+    function linha(l) {
+      var autor = l.autor || String(l.mensagem || "").split(":")[0] || "Equipe";
+      var acao = l.acao || String(l.mensagem || "").replace(autor + ":", "").split("—")[0].trim();
+      var detalhe = l.detalhe || (String(l.mensagem || "").split("—")[1] || "").trim();
+      return "<tr><td>" + dt(l.criadoEm || l.criado_em) + "</td><td><b>" + esc(autor) + "</b></td><td>" + esc(acao) + "</td><td>" + esc(detalhe || "—") + "</td></tr>";
+    }
+    function desenhar(logs, origem) {
+      main(head("Segurança", "Auditoria de alterações") +
+        '<p class="muted">Registro de quem alterou o painel, com data e horário. Acesso protegido pela sessão TOTP.</p>' +
+        '<div class="adm-card adm-table-wrap"><table class="adm-table"><thead><tr><th>Data e hora</th><th>Usuário</th><th>Ação</th><th>Detalhes</th></tr></thead><tbody>' +
+        (logs.map(linha).join("") || '<tr><td colspan="4" class="empty">Nenhuma alteração registrada.</td></tr>') +
+        '</tbody></table><p class="muted" style="font-size:.78rem;margin-top:12px">Fonte: ' + esc(origem) + '.</p></div>');
+    }
+    desenhar(locais, "registro deste navegador");
+    if (window.CesamarEquipeListarAuditoria) window.CesamarEquipeListarAuditoria().then(function (remotos) {
+      if (view === "auditoria" && remotos && remotos.length) desenhar(remotos, "banco seguro da equipe");
+    }).catch(function () { /* o registro local continua disponível */ });
   }
 
   /* ============================================================ CONFIGURAÇÕES E DADOS */

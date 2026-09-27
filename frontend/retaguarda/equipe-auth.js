@@ -15,6 +15,8 @@
     form.senha.closest(".field").hidden=false;
   }
   function rpc(nome,args){ return sb.rpc(nome,args||{}).then(function(r){if(r.error)throw r.error;return r.data;}); }
+  window.CesamarEquipeAuditar=function(acao,detalhe){return rpc("registrar_auditoria",{p_acao:acao,p_detalhe:detalhe||""}).catch(function(){return null;});};
+  window.CesamarEquipeListarAuditoria=function(){return sb.from("staff_audit_logs").select("autor,acao,detalhe,criado_em").order("criado_em",{ascending:false}).limit(500).then(function(r){if(r.error)throw r.error;return r.data||[];});};
   async function carregarPerfil(){
     var u=await sb.auth.getUser(); if(u.error||!u.data.user)throw new Error("Sua sessão expirou. Entre novamente.");
     var r=await sb.rpc("meu_perfil_equipe");
@@ -95,7 +97,7 @@
   });
   (async function(){
     try{
-      if(location.search.indexOf("logout=1")>=0){await sb.auth.signOut();history.replaceState({},"",location.pathname);}
+      if(location.search.indexOf("logout=1")>=0){await sb.auth.signOut();sessionStorage.clear();if(new URLSearchParams(location.search).get("return")==="site"){location.replace("../index.html");return;}history.replaceState({},"",location.pathname);}
       var u=await sb.auth.getUser();
       if(u.data&&u.data.user)await aposSenha();
     }catch(e){

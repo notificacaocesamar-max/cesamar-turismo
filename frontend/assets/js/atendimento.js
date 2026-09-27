@@ -14,7 +14,14 @@
   }
   function prepararEquipe() {
     var sessao=sessaoEquipe(), login=document.querySelector(".equipe-login");
-    if(login && sessao){ login.textContent="Logout"; login.href=(window.Cesamar.ROOT||"")+"retaguarda/index.html?logout=1"; }
+    if(login && sessao && !document.querySelector(".equipe-conta")){
+      var perfil=null; try{perfil=JSON.parse(sessionStorage.getItem("cesamar.equipe.perfil")||"null");}catch(e){}
+      var root=window.Cesamar.ROOT||"", nome=(perfil&&perfil.nome_completo)||"Equipe Cesamar", box=document.createElement("details");
+      function esc(v){return String(v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+      box.className="equipe-conta";
+      box.innerHTML='<summary><i aria-hidden="true"></i><span>'+esc(nome)+'</span></summary><div class="equipe-conta-menu"><small><i></i> Conectado</small><a href="'+root+'retaguarda/index.html">Acessar painel</a><a href="'+root+'retaguarda/index.html?logout=1&return=site">Logout</a></div>';
+      login.replaceWith(box);
+    }
     if(!sessao) return;
     var radar=(window.CESAMAR_RADAR||{}).ofertas||[], seed=((window.Cesamar||{}).store&&window.Cesamar.store.carregar().ofertas)||[];
     document.querySelectorAll(".ad[data-codigo]").forEach(function(card){
