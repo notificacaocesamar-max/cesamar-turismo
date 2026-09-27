@@ -74,7 +74,10 @@
       (Auth.podeAtender(perfil)?'<button class="btn btn--block" id="btn-plantao">Carregando…</button>':'<div class="adm-alert">Este usuário não participa do plantão nem recebe contatos.</div>')+'</section><section class="adm-card"><h3>Meus dados</h3><form id="form-perfil" class="form"><div class="field full"><label>Nome completo</label><input name="nome" value="'+esc(perfil.nome_completo)+'" required></div><div class="field full"><label>E-mail</label><input value="'+esc(perfil.email)+'" disabled></div><div class="field full"><label>WhatsApp</label><input name="whatsapp" value="'+esc(perfil.whatsapp||'')+'" placeholder="5521964898458" pattern="55[1-9][0-9]{9,10}" required><small>Somente números: 55 + DDD + número.</small></div><button class="btn full" type="submit">Salvar dados</button></form></section></div>';
   }
   async function abrirPerfil(){
-    document.getElementById("adm-main").innerHTML=htmlPerfil(); var on=await rpc("meu_status_plantao"), b=document.getElementById("btn-plantao"), t=document.getElementById("status-texto");
+    document.getElementById("adm-main").innerHTML=htmlPerfil();
+    var b=document.getElementById("btn-plantao"), t=document.getElementById("status-texto");
+    if(!Auth.podeAtender(perfil)){t.textContent="O usuário Master não participa do plantão nem recebe contatos de clientes.";return;}
+    var on=await rpc("meu_status_plantao");
     function pintar(){if(!b)return;b.dataset.on=on?"1":"0";b.textContent=on?"Atendendo":"Indisponível";b.style.background=on?"#16834f":"#b3261e";t.textContent=on?"Você está recebendo contatos pelo rodízio até sair ou até 23h59.":"Você não está recebendo contatos.";} pintar();
     if(b)b.onclick=async function(){b.disabled=true;try{on=await rpc("alternar_plantao",{deseja_atender:!on});pintar();}catch(e){alert(e.message);}b.disabled=false;};
     document.getElementById("form-perfil").onsubmit=async function(e){e.preventDefault();var w=this.whatsapp.value.replace(/\D/g,"");try{await rpc("atualizar_meu_perfil",{p_nome:this.nome.value,p_whatsapp:w});perfil.nome_completo=this.nome.value;perfil.whatsapp=w;alert("Dados atualizados.");}catch(x){alert(x.message);}};
@@ -84,7 +87,12 @@
     var abertas={};(s.data||[]).forEach(function(x){if(!x.fim)abertas[x.user_id]=true;});
     document.getElementById("adm-main").innerHTML='<header class="adm-head"><div><span class="eyebrow">Somente Gerencial</span><h1>Controle gerencial</h1></div></header><div class="adm-card adm-table-wrap"><table class="adm-table"><thead><tr><th>Funcionário</th><th>Perfil</th><th>Status atual</th><th>Histórico (60 dias)</th></tr></thead><tbody>'+(p.data||[]).map(function(x){var hist=(s.data||[]).filter(function(y){return y.user_id===x.id;}).map(function(y){return '<small>'+new Date(y.inicio).toLocaleString('pt-BR')+' — '+(y.fim?new Date(y.fim).toLocaleString('pt-BR'):'agora')+'</small>';}).join('');return '<tr><td><b>'+esc(x.nome_completo)+'</b></td><td>'+esc(x.papel)+'</td><td><span class="st '+(abertas[x.id]?'st-publicado':'st-rejeitado')+'">'+(abertas[x.id]?'Atendendo':'Indisponível')+'</span></td><td>'+ (hist||'Sem registros')+'</td></tr>';}).join('')+'</tbody></table></div>';
   }
-  document.getElementById("adm-nav").addEventListener("click",function(e){var b=e.target.closest("[data-equipe-view]");if(!b)return;e.preventDefault();e.stopImmediatePropagation();if(b.dataset.equipeView==="perfil")abrirPerfil();else abrirControle();},true);
+  document.querySelectorAll("[data-equipe-view]").forEach(function(b){
+    b.addEventListener("click",function(e){
+      e.preventDefault();e.stopImmediatePropagation();
+      if(b.dataset.equipeView==="perfil")abrirPerfil();else abrirControle();
+    },true);
+  });
   (async function(){
     try{
       if(location.search.indexOf("logout=1")>=0){await sb.auth.signOut();history.replaceState({},"",location.pathname);}
